@@ -8,9 +8,11 @@ const SAGE = "#dce4d7"
 const MINT = "#d4dccf"
 const INK = "#1d1d1f"
 const GOLD = "#a56f18"
-const CREAM = "#f8f5f0"
-const HEAD = "'Mattone', 'Geist', sans-serif"
-const BODY = "'Geist', 'Bricolage Grotesque', sans-serif"
+const CREAM = "#f5f5f7"
+const HEAD = "'Bricolage Grotesque', sans-serif"
+const BODY = "'Bricolage Grotesque', sans-serif"
+const SUB = "rgb(49, 54, 48)"
+const MUTED = "var(--token-5befc44e-9d08-4683-96c0-ff439142bf85, rgba(49, 54, 48, 0.75))"
 const EASE = "cubic-bezier(0.22, 1, 0.36, 1)"
 
 const APPROACH = [
@@ -162,10 +164,10 @@ export default function AboutPage(props: Props) {
     const padX = phone ? 20 : tablet ? 36 : 56
     const gap = phone ? 72 : 112
 
-    const eyebrow: CSSProperties = { fontFamily: BODY, fontSize: 11, fontWeight: 600, letterSpacing: "0.22em", textTransform: "uppercase", color: INK, display: "flex", alignItems: "center", gap: 12 }
-    const rule = <span style={{ width: 22, height: 1, background: GOLD, display: "inline-block" }} />
-    const h2: CSSProperties = { fontFamily: HEAD, fontWeight: 700, fontSize: phone ? 30 : tablet ? 36 : 44, lineHeight: 1.08, letterSpacing: "-0.02em", color: INK, margin: 0 }
-    const p: CSSProperties = { fontFamily: BODY, fontSize: phone ? 16 : 17, lineHeight: 1.65, color: "rgba(29,29,31,0.78)", margin: 0 }
+    const eyebrow: CSSProperties = { fontFamily: BODY, fontSize: 13, fontWeight: 700, letterSpacing: "0.12em", lineHeight: 1, textTransform: "uppercase", color: SUB, display: "flex", alignItems: "center", gap: 12 }
+    const rule = null
+    const h2: CSSProperties = { fontFamily: HEAD, fontWeight: 600, fontSize: phone ? 28 : 32, lineHeight: 1.1, letterSpacing: "-0.03em", color: INK, margin: 0 }
+    const p: CSSProperties = { fontFamily: BODY, fontSize: phone ? 16 : 17, fontWeight: 400, lineHeight: 1.65, color: MUTED, margin: 0 }
     const glass: CSSProperties = { background: "rgba(255,255,255,0.55)", backdropFilter: "blur(18px) saturate(140%)", WebkitBackdropFilter: "blur(18px) saturate(140%)", border: "1px solid rgba(255,255,255,0.7)", boxShadow: "0 1px 0 rgba(255,255,255,0.6) inset, 0 24px 60px -30px rgba(29,29,31,0.35)", borderRadius: 24 }
     const enter = (d: number): CSSProperties => ({ opacity: entered ? 1 : 0, transform: entered ? "none" : "translateY(22px)", transition: still ? "none" : "opacity 1100ms " + EASE + " " + d + "ms, transform 1100ms " + EASE + " " + d + "ms" })
     const inner: CSSProperties = { width: "100%", maxWidth: 1120, margin: "0 auto", padding: "0 " + padX + "px", boxSizing: "border-box" }
@@ -178,20 +180,20 @@ export default function AboutPage(props: Props) {
                 <div aria-hidden="true" style={{ position: "absolute", inset: 0, background: "radial-gradient(55% 65% at 88% 8%, " + SAGE + " 0%, rgba(220,228,215,0) 72%), radial-gradient(40% 45% at 6% 30%, rgba(212,220,207,0.7) 0%, rgba(212,220,207,0) 70%)", opacity: 0.9 }} />
                 <div style={{ ...inner, position: "relative", display: "grid", gridTemplateColumns: phone || tablet ? "1fr" : "1.25fr 0.75fr", gap: phone ? 36 : 56, alignItems: "end" }}>
                     <div style={{ display: "flex", flexDirection: "column", gap: phone ? 20 : 26 }}>
-                        <div style={{ ...eyebrow, ...enter(0) }}>{rule}ABOUT MINT TIMEPIECES</div>
-                        <h1 style={{ ...h2, fontSize: phone ? 40 : tablet ? 52 : 60, lineHeight: 1.02, ...enter(120) }}>The Beginning</h1>
+                        <div style={{ ...eyebrow, ...enter(0) }}>{rule}About Mint Timepieces</div>
+                        <h1 style={{ ...h2, fontSize: phone ? 36 : 48, fontWeight: 700, letterSpacing: "-0.01em", lineHeight: 1, textTransform: "uppercase", ...enter(120) }}>The Beginning</h1>
                         <div style={{ ...enter(260), display: "flex", flexDirection: "column", gap: 16, maxWidth: 640 }}>
-                            <div style={{ ...eyebrow, fontSize: 10, color: "rgba(29,29,31,0.6)" }}>Our Approach</div>
+                            <div style={{ fontFamily: HEAD, fontSize: phone ? 20 : 22, fontWeight: 600, letterSpacing: "-0.01em", color: INK }}>Our Approach</div>
                             {APPROACH.map((t) => <p key={t.slice(0, 20)} style={p}>{t}</p>)}
                         </div>
                     </div>
                     <div style={{ ...glass, ...enter(420), padding: phone ? 22 : 28, display: "grid", gridTemplateColumns: "1fr 1fr", gap: 18 }}>
                         <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-                            <span style={{ ...eyebrow, fontSize: 10, color: "rgba(29,29,31,0.55)" }}>Est.</span>
+                            <span style={{ ...eyebrow, fontSize: 11, color: SUB }}>Est.</span>
                             <span style={{ fontFamily: HEAD, fontWeight: 700, fontSize: phone ? 26 : 30 }}>2018</span>
                         </div>
                         <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-                            <span style={{ ...eyebrow, fontSize: 10, color: "rgba(29,29,31,0.55)" }}>Rooted in</span>
+                            <span style={{ ...eyebrow, fontSize: 11, color: SUB }}>Rooted in</span>
                             <span style={{ fontFamily: HEAD, fontWeight: 700, fontSize: phone ? 19 : 22, lineHeight: 1.15 }}>Washington, D.C.</span>
                         </div>
                     </div>
@@ -209,7 +211,7 @@ export default function AboutPage(props: Props) {
                                 { k: "Authenticated in house", v: <Counter to={100} still={still} suffix="%" />, note: "Every piece examined before it is offered" },
                             ].map((s, i) => (
                                 <div key={s.k} style={{ padding: phone ? "22px 0" : "26px 28px", borderTop: phone && i ? "1px solid rgba(29,29,31,0.08)" : "none", borderLeft: !phone && i ? "1px solid rgba(29,29,31,0.08)" : "none", display: "flex", flexDirection: "column", gap: 6 }}>
-                                    <span style={{ ...eyebrow, fontSize: 10, color: "rgba(29,29,31,0.55)" }}>{s.k}</span>
+                                    <span style={{ ...eyebrow, fontSize: 11, color: SUB }}>{s.k}</span>
                                     <span style={{ fontFamily: HEAD, fontWeight: 700, fontSize: phone ? 40 : 48, lineHeight: 1, letterSpacing: "-0.02em" }}>{s.v}</span>
                                     <span style={{ fontSize: 13, color: "rgba(29,29,31,0.6)" }}>{s.note}</span>
                                 </div>
@@ -235,9 +237,9 @@ export default function AboutPage(props: Props) {
                                 <div style={{ height: "100%", boxSizing: "border-box", background: "#fff", borderRadius: 22, padding: phone ? 22 : 28, display: "flex", flexDirection: "column", gap: 14, border: "1px solid rgba(29,29,31,0.06)" }}>
                                     <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
                                         <Icon name={x.icon} />
-                                        <span style={{ fontFamily: HEAD, fontSize: 13, color: GOLD }}>{String(i + 1).padStart(2, "0")}</span>
+                                        <span style={{ fontFamily: HEAD, fontSize: 13, fontWeight: 600, color: SUB }}>{String(i + 1).padStart(2, "0")}</span>
                                     </div>
-                                    <h3 style={{ fontFamily: HEAD, fontWeight: 700, fontSize: 21, lineHeight: 1.2, margin: 0 }}>{x.title}</h3>
+                                    <h3 style={{ fontFamily: HEAD, fontWeight: 600, fontSize: 20, letterSpacing: "-0.01em", lineHeight: 1.15, margin: 0, color: INK }}>{x.title}</h3>
                                     <p style={{ ...p, fontSize: 15 }}>{x.body}</p>
                                 </div>
                             </Reveal>
@@ -262,7 +264,7 @@ export default function AboutPage(props: Props) {
                                     )}
                                 </div>
                                 <figcaption style={{ display: "flex", flexDirection: "column", gap: 2 }}>
-                                    <span style={{ fontFamily: HEAD, fontWeight: 700, fontSize: 18 }}>Isa Hamdan</span>
+                                    <span style={{ fontFamily: HEAD, fontWeight: 600, fontSize: 18, color: INK }}>Isa Hamdan</span>
                                     <span style={{ fontSize: 13, color: "rgba(29,29,31,0.6)" }}>Founder</span>
                                 </figcaption>
                             </figure>
@@ -270,7 +272,7 @@ export default function AboutPage(props: Props) {
                         <div style={{ display: "flex", flexDirection: "column", gap: 18 }}>
                             <Reveal still={still}><div style={eyebrow}>{rule}One Man Showroom</div></Reveal>
                             <Reveal still={still} delay={80}><h2 style={h2}>Our Experience</h2></Reveal>
-                            <Reveal still={still} delay={140}><p style={{ ...p, fontFamily: HEAD, fontSize: phone ? 18 : 21, lineHeight: 1.4, color: INK }}>From Geneva’s finest to your wrist guided by years inside the craft</p></Reveal>
+                            <Reveal still={still} delay={140}><p style={{ ...p, fontSize: phone ? 18 : 20, fontWeight: 500, lineHeight: 1.5, color: INK }}>From Geneva’s finest to your wrist guided by years inside the craft</p></Reveal>
                             {storyParas.map((t, i) => <Reveal key={i} still={still} delay={60}><p style={p}>{t}</p></Reveal>)}
                         </div>
                     </div>
@@ -285,7 +287,7 @@ export default function AboutPage(props: Props) {
                                         <span style={{ position: "relative", marginTop: 6, width: 9, height: 9, borderRadius: 999, background: i === TIMELINE.length - 1 ? GOLD : CREAM, border: "1px solid " + (i === TIMELINE.length - 1 ? GOLD : "rgba(29,29,31,0.45)") }} />
                                     </div>
                                     <div style={{ paddingBottom: i === TIMELINE.length - 1 ? 0 : 28, display: "flex", flexDirection: "column", gap: 6 }}>
-                                        <span style={{ fontFamily: HEAD, fontWeight: 700, fontSize: phone ? 17 : 19 }}>{t.place}</span>
+                                        <span style={{ fontFamily: HEAD, fontWeight: 600, fontSize: phone ? 18 : 20, letterSpacing: "-0.01em", color: INK }}>{t.place}</span>
                                         <span style={{ ...p, fontSize: 15 }}>{t.text}</span>
                                     </div>
                                 </div>
@@ -319,7 +321,7 @@ export default function AboutPage(props: Props) {
                             <Reveal key={x.title} still={still} delay={i * 110}>
                                 <div style={{ height: "100%", boxSizing: "border-box", padding: phone ? 22 : 28, borderRadius: 22, background: i === 1 ? SAGE : "#fff", border: "1px solid rgba(29,29,31,0.06)", display: "flex", flexDirection: "column", gap: 14 }}>
                                     <Icon name={["seal", "people", "shield"][i]} />
-                                    <h3 style={{ fontFamily: HEAD, fontWeight: 700, fontSize: 21, lineHeight: 1.2, margin: 0 }}>{x.title}</h3>
+                                    <h3 style={{ fontFamily: HEAD, fontWeight: 600, fontSize: 20, letterSpacing: "-0.01em", lineHeight: 1.15, margin: 0, color: INK }}>{x.title}</h3>
                                     <p style={{ ...p, fontSize: 15 }}>{x.body}</p>
                                 </div>
                             </Reveal>
@@ -335,7 +337,7 @@ export default function AboutPage(props: Props) {
                         <div style={{ position: "relative", overflow: "hidden", borderRadius: 28, background: "rgba(220,228,215,0.6)", backdropFilter: "blur(18px) saturate(140%)", WebkitBackdropFilter: "blur(18px) saturate(140%)", border: "1px solid rgba(255,255,255,0.7)", boxShadow: "0 24px 60px -30px rgba(29,29,31,0.3)", color: INK, padding: phone ? "40px 24px" : "64px 56px", display: "flex", flexDirection: phone ? "column" : "row", alignItems: phone ? "flex-start" : "center", justifyContent: "space-between", gap: 28 }}>
                             <div aria-hidden="true" style={{ position: "absolute", inset: 0, background: "radial-gradient(50% 80% at 100% 0%, rgba(255,255,255,0.6), rgba(255,255,255,0) 70%)" }} />
                             <div style={{ position: "relative", display: "flex", flexDirection: "column", gap: 14, maxWidth: 560 }}>
-                                <div style={{ ...eyebrow }}><span style={{ width: 22, height: 1, background: GOLD, display: "inline-block" }} />PRIVATE VIEWINGS</div>
+                                <div style={{ ...eyebrow }}><span style={{ width: 22, height: 1, background: GOLD, display: "inline-block" }} />Private viewings</div>
                                 <h2 style={h2}>See it in person, at your pace.</h2>
                                 <p style={p}>Book a private viewing in Los Angeles and spend time with the pieces that interest you, with no pressure and no rush.</p>
                             </div>
