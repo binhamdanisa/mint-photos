@@ -229,7 +229,7 @@ export default function AboutPage(props: Props) {
                         </div>
                         <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>{PHILOSOPHY.map((t) => <p key={t.slice(0, 20)} style={p}>{t}</p>)}</div>
                     </Reveal>
-                    <div style={{ display: "grid", gridTemplateColumns: phone ? "1fr" : "repeat(3, 1fr)", gap: phone ? 12 : 16 }}>
+                    <div style={{ display: "grid", gridTemplateColumns: phone || tablet ? "1fr" : "repeat(3, 1fr)", gap: phone ? 12 : 16 }}>
                         {PRINCIPLES.map((x, i) => (
                             <Reveal key={x.title} still={still} delay={i * 110}>
                                 <div style={{ height: "100%", boxSizing: "border-box", background: "#fff", borderRadius: 22, padding: phone ? 22 : 28, display: "flex", flexDirection: "column", gap: 14, border: "1px solid rgba(29,29,31,0.06)" }}>
@@ -250,7 +250,7 @@ export default function AboutPage(props: Props) {
             <section style={{ padding: gap + "px 0", background: "linear-gradient(180deg, rgba(220,228,215,0) 0%, rgba(220,228,215,0.55) 18%, rgba(220,228,215,0.35) 70%, rgba(248,245,240,0) 100%)" }}>
                 <div style={{ ...inner, display: "flex", flexDirection: "column", gap: phone ? 40 : 64 }}>
                     <div style={{ display: "grid", gridTemplateColumns: phone ? "1fr" : tablet ? "0.8fr 1.2fr" : "0.7fr 1.3fr", gap: phone ? 28 : 56, alignItems: "start" }}>
-                        <Reveal still={still} style={{ position: phone ? "relative" : "sticky", top: 120 }}>
+                        <Reveal still={still} style={phone ? {} : { position: "sticky", top: 120 }}>
                             <figure style={{ margin: 0, display: "flex", flexDirection: "column", gap: 14, maxWidth: phone ? 300 : 380 }}>
                                 <div data-slot="headshot" aria-label="Headshot slot" style={{ position: "relative", width: "100%", aspectRatio: "4 / 5", borderRadius: 24, overflow: "hidden", background: headshot && headshot.src ? MINT : "linear-gradient(160deg, " + SAGE + " 0%, " + MINT + " 100%)", border: "1px solid rgba(29,29,31,0.06)" }}>
                                     {headshot && headshot.src ? (
