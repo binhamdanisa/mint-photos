@@ -179,7 +179,7 @@ export default function AboutPage(props: Props) {
                 <div style={{ ...inner, position: "relative", display: "grid", gridTemplateColumns: phone || tablet ? "1fr" : "1.25fr 0.75fr", gap: phone ? 36 : 56, alignItems: "end" }}>
                     <div style={{ display: "flex", flexDirection: "column", gap: phone ? 20 : 26 }}>
                         <div style={{ ...eyebrow, ...enter(0) }}>{rule}ABOUT MINT TIMEPIECES</div>
-                        <h1 style={{ ...h2, fontSize: phone ? 44 : tablet ? 60 : 76, lineHeight: 1.0, ...enter(120) }}>The Beginning</h1>
+                        <h1 style={{ ...h2, fontSize: phone ? 40 : tablet ? 52 : 60, lineHeight: 1.02, ...enter(120) }}>The Beginning</h1>
                         <div style={{ ...enter(260), display: "flex", flexDirection: "column", gap: 16, maxWidth: 640 }}>
                             <div style={{ ...eyebrow, fontSize: 10, color: "rgba(29,29,31,0.6)" }}>Our Approach</div>
                             {APPROACH.map((t) => <p key={t.slice(0, 20)} style={p}>{t}</p>)}
@@ -332,16 +332,16 @@ export default function AboutPage(props: Props) {
             <section style={{ padding: "0 0 " + (phone ? 120 : gap) + "px" }}>
                 <div style={inner}>
                     <Reveal still={still}>
-                        <div style={{ position: "relative", overflow: "hidden", borderRadius: 28, background: INK, color: "#fff", padding: phone ? "40px 24px" : "64px 56px", display: "flex", flexDirection: phone ? "column" : "row", alignItems: phone ? "flex-start" : "center", justifyContent: "space-between", gap: 28 }}>
-                            <div aria-hidden="true" style={{ position: "absolute", inset: 0, background: "radial-gradient(50% 80% at 100% 0%, rgba(220,228,215,0.18), rgba(220,228,215,0) 70%)" }} />
+                        <div style={{ position: "relative", overflow: "hidden", borderRadius: 28, background: "rgba(220,228,215,0.6)", backdropFilter: "blur(18px) saturate(140%)", WebkitBackdropFilter: "blur(18px) saturate(140%)", border: "1px solid rgba(255,255,255,0.7)", boxShadow: "0 24px 60px -30px rgba(29,29,31,0.3)", color: INK, padding: phone ? "40px 24px" : "64px 56px", display: "flex", flexDirection: phone ? "column" : "row", alignItems: phone ? "flex-start" : "center", justifyContent: "space-between", gap: 28 }}>
+                            <div aria-hidden="true" style={{ position: "absolute", inset: 0, background: "radial-gradient(50% 80% at 100% 0%, rgba(255,255,255,0.6), rgba(255,255,255,0) 70%)" }} />
                             <div style={{ position: "relative", display: "flex", flexDirection: "column", gap: 14, maxWidth: 560 }}>
-                                <div style={{ ...eyebrow, color: "rgba(255,255,255,0.7)" }}><span style={{ width: 22, height: 1, background: GOLD, display: "inline-block" }} />PRIVATE VIEWINGS</div>
-                                <h2 style={{ ...h2, color: "#fff" }}>See it in person, at your pace.</h2>
-                                <p style={{ ...p, color: "rgba(255,255,255,0.72)" }}>Book a private viewing in Los Angeles and spend time with the pieces that interest you, with no pressure and no rush.</p>
+                                <div style={{ ...eyebrow }}><span style={{ width: 22, height: 1, background: GOLD, display: "inline-block" }} />PRIVATE VIEWINGS</div>
+                                <h2 style={h2}>See it in person, at your pace.</h2>
+                                <p style={p}>Book a private viewing in Los Angeles and spend time with the pieces that interest you, with no pressure and no rush.</p>
                             </div>
                             <div style={{ position: "relative", display: "flex", flexDirection: phone ? "column" : "row", gap: 12, width: phone ? "100%" : "auto" }}>
-                                <a href={viewingLink} style={{ textAlign: "center", padding: "16px 26px", borderRadius: 999, background: "#fff", color: INK, fontWeight: 600, fontSize: 15, textDecoration: "none", whiteSpace: "nowrap" }}>Book a private viewing</a>
-                                <a href={"sms:" + textNumber} style={{ textAlign: "center", padding: "16px 26px", borderRadius: 999, color: "#fff", fontWeight: 600, fontSize: 15, textDecoration: "none", border: "1px solid rgba(255,255,255,0.35)", whiteSpace: "nowrap" }}>Text us</a>
+                                <a href={viewingLink} style={{ textAlign: "center", padding: "16px 26px", borderRadius: 999, background: INK, color: "#fff", fontWeight: 600, fontSize: 15, textDecoration: "none", whiteSpace: "nowrap" }}>Book a private viewing</a>
+                                <a href={"sms:" + textNumber} style={{ textAlign: "center", padding: "16px 26px", borderRadius: 999, color: INK, fontWeight: 600, fontSize: 15, textDecoration: "none", border: "1px solid rgba(29,29,31,0.25)", whiteSpace: "nowrap" }}>Text us</a>
                             </div>
                         </div>
                     </Reveal>
