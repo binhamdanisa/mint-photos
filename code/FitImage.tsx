@@ -8,6 +8,7 @@ interface Props {
     lume: boolean
     lumeMask?: { src?: string }
     inspect: boolean
+    second?: { src?: string; srcSet?: string; alt?: string }
 }
 
 // Reads the centre of the photo to tell whether the dial is dark enough for a lume preview.
@@ -112,7 +113,11 @@ function useInspect(enabled: boolean) {
  * @framerSupportedLayoutHeight auto
  */
 export default function FitImage(props: Props) {
-    const { image, alt = "", lume = false, lumeMask, inspect = true, style } = props
+    const { image, alt = "", lume = false, lumeMask, inspect = true, second, style } = props
+    const secondSrc = second && second.src
+    // E1: where a clean second photo exists, hover (desktop) or press (phone) crossfades to it. Otherwise the card stays still.
+    const [alt2, setAlt2] = useState(false)
+    const showSecond = !!secondSrc && alt2
     const maskSrc = lumeMask && lumeMask.src
     const src = image && image.src
     const fid = "lume" + useId().replace(/[^a-zA-Z0-9]/g, "")
@@ -130,11 +135,21 @@ export default function FitImage(props: Props) {
         willChange: zoom.on ? "transform" : undefined,
     }
     return (
-        <div ref={box} data-mm-skip={inspect && src ? "" : undefined} style={{ position: "relative", width: "100%", aspectRatio: "1 / 1", display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden", cursor: inspect && src ? (zoom.on ? "zoom-out" : "zoom-in") : undefined, WebkitTouchCallout: "none", userSelect: "none", ...style, height: "auto", background: night ? "radial-gradient(70% 70% at 50% 45%, #121814 0%, #050706 100%)" : (style && style.background) as any, transition: "background " + ease }}>
+        <div ref={box} data-mm-skip={inspect && src ? "" : undefined}
+            onPointerEnter={secondSrc ? (e) => { if (e.pointerType === "mouse") setAlt2(true) } : undefined}
+            onPointerLeave={secondSrc ? (e) => { if (e.pointerType === "mouse") setAlt2(false) } : undefined}
+            onTouchStart={secondSrc ? () => setAlt2(true) : undefined}
+            onTouchEnd={secondSrc ? () => setAlt2(false) : undefined}
+            onTouchCancel={secondSrc ? () => setAlt2(false) : undefined}
+            style={{ position: "relative", width: "100%", aspectRatio: "1 / 1", display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden", cursor: inspect && src ? (zoom.on ? "zoom-out" : "zoom-in") : undefined, WebkitTouchCallout: "none", userSelect: "none", ...style, height: "auto", background: night ? "radial-gradient(70% 70% at 50% 45%, #121814 0%, #050706 100%)" : (style && style.background) as any, transition: "background " + ease }}>
             {src ? (
                 <div style={{ position: "relative", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", ...zoomStyle }}>
                     <img src={src} srcSet={image && image.srcSet} sizes="(max-width: 810px) 100vw, 50vw" alt={alt || (image && image.alt) || ""} draggable={false}
-                        style={{ ...imgStyle, filter: night ? "brightness(0.13) saturate(0.4)" : "none", transition: "filter " + ease }} />
+                        style={{ ...imgStyle, opacity: showSecond ? 0 : 1, filter: night ? "brightness(0.13) saturate(0.4)" : "none", transition: "filter " + ease + ", opacity 600ms cubic-bezier(0.22, 1, 0.36, 1)" }} />
+                    {secondSrc ? (
+                        <img src={secondSrc} srcSet={second && second.srcSet} sizes="(max-width: 810px) 50vw, 25vw" alt="" aria-hidden="true" draggable={false} loading="lazy"
+                            style={{ ...imgStyle, position: "absolute", inset: 0, margin: "auto", opacity: showSecond ? 1 : 0, transition: "opacity 600ms cubic-bezier(0.22, 1, 0.36, 1)", pointerEvents: "none" }} />
+                    ) : null}
                     {lume && canLume ? (
                         <>
                             <div aria-hidden="true" style={{ position: "absolute", inset: 0, background: "rgb(120, 255, 190)", WebkitMaskImage: "url(" + maskSrc + ")", maskImage: "url(" + maskSrc + ")", WebkitMaskSize: "100% 100%", maskSize: "100% 100%", filter: "blur(7px)", opacity: night ? 0.95 : 0, transition: "opacity " + ease, pointerEvents: "none" }} />
@@ -164,4 +179,5 @@ addPropertyControls(FitImage, {
     lume: { type: ControlType.Boolean, title: "Lume toggle", defaultValue: false },
     lumeMask: { type: ControlType.ResponsiveImage, title: "Lume mask" },
     inspect: { type: ControlType.Boolean, title: "Tap to inspect", defaultValue: true },
+    second: { type: ControlType.ResponsiveImage, title: "Second view" },
 })
