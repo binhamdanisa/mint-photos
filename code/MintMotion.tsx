@@ -112,6 +112,13 @@ function start() {
     const inView = (el: Element) => { const r = rectOf(el); return r.top < vh() * 0.98 && r.bottom > 0 }
     const visible = (el: Element) => { const r = rectOf(el); return r.width > 2 && r.height > 2 }
     const nameOf = (el: Element) => el.getAttribute("data-framer-name") || ""
+    // Framer wraps many layers in display:contents boxes; look straight through them.
+    const isContents = (el: Element) => { const r = rectOf(el); return r.width === 0 && r.height === 0 && el.children.length > 0 && getComputedStyle(el).display === "contents" }
+    const kidsOf = (el: Element): HTMLElement[] => {
+        const out: HTMLElement[] = []
+        for (const c of Array.from(el.children) as HTMLElement[]) { if (isContents(c)) out.push(...kidsOf(c)); else out.push(c) }
+        return out
+    }
 
     const isChrome = (el: Element) => {
         if (CHROME_NAMES.has(nameOf(el))) return true
@@ -125,7 +132,7 @@ function start() {
         const t = document.querySelector("[data-layout-template]")
         if (!t) return null
         let best: HTMLElement | null = null, bh = 0
-        for (const c of Array.from(t.children) as HTMLElement[]) {
+        for (const c of kidsOf(t)) {
             if (isChrome(c)) continue
             const h = rectOf(c).height
             if (h > bh) { bh = h; best = c }
@@ -137,7 +144,7 @@ function start() {
         const W = rectOf(root).width
         let node: HTMLElement = root
         for (let d = 0; d < 8; d++) {
-            const kids = (Array.from(node.children) as HTMLElement[]).filter((k) => visible(k) && !isChrome(k))
+            const kids = kidsOf(node).filter((k) => visible(k) && !isChrome(k))
             const wide = kids.filter((k) => { const r = rectOf(k); return r.width >= W * 0.88 && r.height >= 120 })
             if (wide.length >= 2) return wide
             if (wide.length === 1) { node = wide[0]; continue }
@@ -149,7 +156,7 @@ function start() {
     const CONTROL_SEL = "input,select,textarea,iframe,form,[contenteditable=true]"
     const ATOMIC = /^(H1|H2|H3|H4|H5|H6|P|IMG|PICTURE|VIDEO|SVG|BUTTON|A|LI|FIGURE|BLOCKQUOTE|TABLE|CANVAS)$/
     const SKIP_TAG = /^(SCRIPT|STYLE|TEMPLATE|NOSCRIPT|LINK|META|IFRAME|INPUT|SELECT|TEXTAREA|FORM|LABEL)$/
-    const CARDISH = /card|tile|step|review|post|feature|item/i
+    const CARDISH = /\b(card|tile|step|review|post|feature|item)\b/i
     const BUY_NAMES = /actions|price|buy|checkout|cart|availability|purchase|concierge|quick facts|breadcrumb/i
 
     const hasOwnText = (el: Element) => Array.from(el.childNodes).some((n) => n.nodeType === 3 && (n.textContent || "").trim().length > 1)
@@ -163,8 +170,9 @@ function start() {
         if (r.width < 2 || r.height < 2) return
         const controls = !!el.querySelector(CONTROL_SEL)
         if (controls && r.height < vh()) return // a compact form or buy module stays perfectly still (A6)
-        const kids = (Array.from(el.children) as HTMLElement[]).filter((c) => !SKIP_TAG.test(c.tagName) && visible(c))
-        const atomic = !controls && (ATOMIC.test(el.tagName) || kids.length === 0 || hasOwnText(el) || (CARDISH.test(nameOf(el)) && r.height < vh() * 0.9))
+        const kids = kidsOf(el).filter((c) => !SKIP_TAG.test(c.tagName) && visible(c))
+        const smallGroup = depth >= 2 && r.height <= 140 && r.width < vw() * 0.95 && !el.querySelector("img,video,h1,h2")
+        const atomic = !controls && (ATOMIC.test(el.tagName) || kids.length === 0 || hasOwnText(el) || smallGroup || (CARDISH.test(nameOf(el)) && r.height < vh() * 0.9))
         if (atomic) { out.push(el); return }
         for (const k of kids) collect(k, out, depth + 1)
     }
