@@ -67,7 +67,7 @@ ${scope} :is([data-framer-name$="Button"],[data-framer-name$="Action"])${notChro
 [data-mm-pulse]{animation:mmPulse .45s ${EASE}}
 }
 @media (prefers-reduced-motion: no-preference) and (hover: hover) and (pointer: fine){
-[data-mm-card]:hover{translate:0 -3px}
+[data-mm-card]:not([data-framer-name="Product Card"]):hover{translate:0 -3px}
 }
 `
 }
