@@ -85,13 +85,13 @@ function unitsOf(section: HTMLElement): Unit[] {
     for (const k of kids(section)) {
         const n = nameOf(k)
         if (SKIP_UNIT.test(n) || k.querySelector('[data-framer-name="Next Button"]') || k.querySelector('[data-framer-name="Back Button"]')) continue
-        if (k.getClientRects().length === 0) continue
-        const hint = /Hint/.test(n) || (!k.querySelector(CONTROL) && !k.querySelector("[data-mint-chips]") && !/Upload/i.test(n) && !!k.textContent?.trim() && k.getBoundingClientRect().height < 120)
-        const chips = k.querySelector<HTMLElement>("[data-mint-chips]")
+        if (k.getClientRects().length === 0 && !k.hasAttribute("data-flow-off")) continue
+        const hint = /Hint/.test(n) || (!k.querySelector(CONTROL) && !k.querySelector("div[data-mint-chips]") && !/Upload/i.test(n) && !!k.textContent?.trim() && k.getBoundingClientRect().height < 120)
+        const chips = k.querySelector<HTMLElement>("div[data-mint-chips]")
         const radios = k.querySelectorAll("input[type=radio]").length
         const checks = k.querySelectorAll("input[type=checkbox]").length
         const choice = !!chips || radios > 0 || checks > 1 || !!k.querySelector("select")
-        const single = (chips ? chips.getAttribute("role") === "radiogroup" : radios > 0) && !k.querySelector("input[type=text]:not([data-mint-chips-input]), textarea") && kids(k).length <= 3
+        const single = (chips ? chips.getAttribute("role") === "radiogroup" : radios > 0) && !k.querySelector("input[type=text]:not([data-mint-chips=\"1\"]), textarea") && kids(k).length <= 3
         const fields = k.querySelectorAll(CONTROL).length
         out.push({ el: k, choice, single, weight: choice ? 3 : /Row/.test(n) ? 2 : Math.max(1, Math.min(fields, 3)), hint })
     }
@@ -142,7 +142,7 @@ function noteFor(unit: HTMLElement, show: boolean) {
     }
     if (!show) { n.style.display = "none"; return }
     const label = labelOf(unit)
-    const isChoice = !!unit.querySelector("[data-mint-chips], input[type=radio], input[type=checkbox], select")
+    const isChoice = !!unit.querySelector("div[data-mint-chips], input[type=radio], input[type=checkbox], select")
     const lower = label ? label.charAt(0).toLowerCase() + label.slice(1).replace(/\?$/, "") : ""
     n.textContent = isChoice ? "Choose an answer to continue." : lower ? "Add " + (/^(your|a|an|the)\b/.test(lower) ? "" : "your ") + lower + " to continue." : "This answer is needed to continue."
     n.style.display = "flex"
@@ -152,17 +152,17 @@ const CSS = (scope: string) => `
 ${scope} [data-flow-note]{display:none;align-items:center;gap:8px;margin:2px 0 4px;font-family:${FONT};font-size:13px;font-weight:500;line-height:1.4;color:${INK}}
 ${scope} [data-flow-note]::before{content:"";width:5px;height:5px;border-radius:5px;background:${BRASS};flex:none}
 ${scope} [data-mint-blocked]{background:transparent!important;color:${INK}!important;font-weight:500!important;padding:0!important}
-${scope} [data-mint-chips] + div{color:${INK}!important}
-${scope} [data-mint-chips]{display:grid!important;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:10px!important}
-${scope} [data-mint-chips] > button{position:relative!important;display:flex!important;align-items:center!important;justify-content:flex-start!important;min-height:58px!important;padding:16px 44px 16px 18px!important;border-radius:16px!important;background:${SAND}!important;border:1px solid rgba(49,54,48,0.14)!important;color:${INK}!important;font-family:${FONT}!important;font-size:15px!important;font-weight:600!important;text-align:left!important;line-height:1.3!important;cursor:pointer!important;transition:background .35s ${EASE},border-color .35s ${EASE},box-shadow .35s ${EASE}!important;-webkit-tap-highlight-color:transparent}
-${scope} [data-mint-chips] > button[aria-checked="true"],${scope} [data-mint-chips] > button[aria-pressed="true"]{background:${SAGE_TINT}!important;border-color:${BRASS}!important;box-shadow:inset 0 0 0 1px ${BRASS}!important}
-${scope} [data-mint-chips] > button::after{content:"";position:absolute;right:16px;top:50%;width:18px;height:18px;margin-top:-9px;border-radius:18px;border:1px solid rgba(49,54,48,0.18);box-sizing:border-box;transition:all .35s ${EASE}}
-${scope} [data-mint-chips] > button[aria-checked="true"]::after,${scope} [data-mint-chips] > button[aria-pressed="true"]::after{border-color:${BRASS};background:${BRASS} url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M6 12.5l4 4 8-9' fill='none' stroke='white' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/12px no-repeat}
+${scope} div[data-mint-chips] + div{color:${INK}!important}
+${scope} div[data-mint-chips]{display:grid!important;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:10px!important}
+${scope} div[data-mint-chips] > button{position:relative!important;display:flex!important;align-items:center!important;justify-content:flex-start!important;min-height:58px!important;padding:16px 44px 16px 18px!important;border-radius:16px!important;background:${SAND}!important;border:1px solid rgba(49,54,48,0.14)!important;color:${INK}!important;font-family:${FONT}!important;font-size:15px!important;font-weight:600!important;text-align:left!important;line-height:1.3!important;cursor:pointer!important;transition:background .35s ${EASE},border-color .35s ${EASE},box-shadow .35s ${EASE}!important;-webkit-tap-highlight-color:transparent}
+${scope} div[data-mint-chips] > button[aria-checked="true"],${scope} div[data-mint-chips] > button[aria-pressed="true"]{background:${SAGE_TINT}!important;border-color:${BRASS}!important;box-shadow:inset 0 0 0 1px ${BRASS}!important}
+${scope} div[data-mint-chips] > button::after{content:"";position:absolute;right:16px;top:50%;width:18px;height:18px;margin-top:-9px;border-radius:18px;border:1px solid rgba(49,54,48,0.18);box-sizing:border-box;transition:all .35s ${EASE}}
+${scope} div[data-mint-chips] > button[aria-checked="true"]::after,${scope} div[data-mint-chips] > button[aria-pressed="true"]::after{border-color:${BRASS};background:${BRASS} url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M6 12.5l4 4 8-9' fill='none' stroke='white' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/12px no-repeat}
 ${scope} [data-framer-name="Category Chips"]{display:grid!important;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:10px!important;width:100%!important}
 ${scope} [data-framer-name="Category Chips"] > [data-framer-name$=" Chip"]{min-height:58px!important;padding:14px 18px!important;border-radius:16px!important;background:${SAND}!important;border:1px solid rgba(49,54,48,0.14)!important;box-shadow:none!important;width:auto!important;transition:background .35s ${EASE},border-color .35s ${EASE},box-shadow .35s ${EASE}!important}
 ${scope} [data-framer-name="Category Chips"] > [data-framer-name$=" Chip"]:has(input:checked){background:${SAGE_TINT}!important;border-color:${BRASS}!important;box-shadow:inset 0 0 0 1px ${BRASS}!important}
 ${scope} [data-framer-name="Category Chips"] p{font-family:${FONT}!important;font-size:15px!important;font-weight:600!important;color:${INK}!important}
-@media (max-width: 767.98px){${scope} [data-mint-chips],${scope} [data-framer-name="Category Chips"]{grid-template-columns:1fr!important}}
+@media (max-width: 767.98px){${scope} div[data-mint-chips],${scope} [data-framer-name="Category Chips"]{grid-template-columns:1fr!important}}
 `
 
 export default function FormFlow(props: Props) {
@@ -255,7 +255,7 @@ export default function FormFlow(props: Props) {
         missing.forEach((m) => noteFor(m, true))
         const first = missing[0]
         first.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "center" })
-        const focusable = first.querySelector<HTMLElement>("[data-mint-chips] button, input:not([type=hidden]), select, textarea")
+        const focusable = first.querySelector<HTMLElement>("div[data-mint-chips] button, input:not([type=hidden]), select, textarea")
         if (focusable) setTimeout(() => focusable.focus({ preventScroll: true }), 300)
         return false
     }
@@ -301,7 +301,7 @@ export default function FormFlow(props: Props) {
         let t: any = 0
         const onPick = (e: Event) => {
             const el = e.target as Element | null
-            const chip = el && el.closest && el.closest('[data-mint-chips][role="radiogroup"] > button, input[type=radio]')
+            const chip = el && el.closest && el.closest('div[data-mint-chips][role="radiogroup"] > button, input[type=radio]')
             if (!chip) return
             const g = currentGroup()[screenRef.current] || []
             const real = g.filter((u) => !u.hint)
@@ -421,7 +421,7 @@ export default function FormFlow(props: Props) {
             style={{ display: "block", width: "100%", background: "none", border: 0, padding: "2px 0 0", cursor: "pointer", textAlign: "left", fontFamily: FONT, color: INK, WebkitTapHighlightColor: "transparent" }}>
             <span style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: 12 }}>
                 <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.16em", textTransform: "uppercase", color: BRASS, whiteSpace: "nowrap" }}>Step {cur} of {n}</span>
-                <span style={{ fontSize: 14, fontWeight: 600, textAlign: "right" }}>{curName} <span aria-hidden="true" style={{ opacity: 0.45, fontWeight: 500 }}>⌄</span></span>
+                <span style={{ fontSize: 14, fontWeight: 600, textAlign: "right" }}>{curName} <svg aria-hidden="true" width="10" height="10" viewBox="0 0 24 24" style={{ marginLeft: 4, opacity: 0.5, verticalAlign: "middle" }}><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" /></svg></span>
             </span>
             <span style={{ display: "block", height: 1, marginTop: 12, background: "rgba(165,111,24,0.18)", position: "relative", overflow: "hidden" }}>
                 <span style={{ position: "absolute", inset: 0, transformOrigin: "0 50%", transform: `scaleX(${fraction})`, background: BRASS, transition: reduce ? "none" : `transform .9s ${EASE}` }} />
@@ -433,6 +433,8 @@ export default function FormFlow(props: Props) {
         <div style={{ fontFamily: FONT, color: INK, marginTop: 8 }}>
             <div style={{ fontSize: 22, fontWeight: 600, letterSpacing: "-0.01em" }}>{reviewTitle}</div>
             <div style={{ fontSize: 14, opacity: 0.65, marginTop: 6 }}>{reviewNote}</div>
+            <button type="button" onClick={() => { const last = total; const sec = sections()[last - 1]; jump(last, sec ? Math.max(0, groupsOf(unitsOf(sec)).length - 1) : 0) }}
+                style={{ marginTop: 12, padding: "6px 0", background: "none", border: 0, cursor: "pointer", fontFamily: FONT, fontSize: 11, fontWeight: 700, letterSpacing: "0.16em", textTransform: "uppercase", color: BRASS }}>← Back</button>
             <div style={{ height: 1, background: BRASS, opacity: 0.4, margin: "18px 0 4px" }} />
             {review.map((lines, i) => lines.length ? (
                 <div key={i} style={{ padding: "10px 0 4px" }}>
