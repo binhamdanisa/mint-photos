@@ -30,7 +30,9 @@ const CSS = `
 @keyframes svUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
 .sv-g{transform-box:fill-box;transform-origin:50% 50%}
 .sv-in{opacity:0;animation:svUp 1.2s cubic-bezier(.22,1,.36,1) forwards}
-.sv-cta:hover{background:#fff!important}
+.sv-arrow{display:inline-flex;align-items:center;gap:8px;transition:gap 250ms ease}
+.sv-act:hover .sv-arrow{gap:12px}
+.sv-act2:hover{color:#f4f2ec!important}
 .sv-cta:focus-visible,.sv-link:focus-visible{outline:1px solid ${BRASS};outline-offset:4px}
 .sv-link:hover span{border-bottom-color:${CREAM}!important}
 .sv-wrap{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);align-items:center;gap:clamp(24px,4vw,64px);min-height:min(92svh,920px);padding:clamp(120px,14svh,150px) 5vw clamp(48px,7svh,80px);box-sizing:border-box}
@@ -180,25 +182,23 @@ export default function ServiceHero(props: Props) {
         <section style={{ position: "relative", width: "100%", background: "radial-gradient(120% 90% at 78% 40%, #1a1712 0%, #0b0b0a 55%, #000 100%)", color: CREAM, fontFamily: FONT, overflow: "hidden", ...style }}>
             <style>{CSS}</style>
             <div className="sv-wrap">
-                <div style={{ display: "flex", flexDirection: "column", gap: "clamp(14px, 1.6vw, 22px)", maxWidth: 560, position: "relative", zIndex: 2 }}>
-                    <span className={inCls} style={{ ...anim(100), display: "inline-flex", alignItems: "center", gap: 12, fontSize: 11, fontWeight: 600, letterSpacing: "0.3em", textTransform: "uppercase", color: BRASS }}>
+                <div style={{ display: "flex", flexDirection: "column", gap: 12, maxWidth: 420, position: "relative", zIndex: 2 }}>
+                    <span className={inCls} style={{ ...anim(100), display: "inline-flex", alignItems: "center", gap: 12, fontSize: 10, fontWeight: 600, letterSpacing: "0.3em", textTransform: "uppercase", color: BRASS }}>
                         <span style={{ width: 26, height: 1, background: BRASS, opacity: 0.7 }} />{eyebrow}
                     </span>
-                    <h1 className={inCls} style={{ ...anim(220), margin: 0, fontSize: "clamp(40px, 5.6vw, 84px)", lineHeight: 0.98, fontWeight: 400, letterSpacing: "-0.035em" }}>{title}</h1>
-                    <p className={inCls} style={{ ...anim(340), margin: 0, fontSize: "clamp(18px, 1.7vw, 24px)", lineHeight: 1.35, fontWeight: 400, color: BRASS }}>{line}</p>
-                    <div className={inCls} style={{ ...anim(460), display: "flex", flexWrap: "wrap", alignItems: "center", gap: "14px 26px", paddingTop: 8 }}>
-                        <a className="sv-cta" href={ctaLink} style={{ display: "inline-flex", alignItems: "center", gap: 10, fontSize: 13, fontWeight: 600, letterSpacing: "0.14em", textTransform: "uppercase", color: "#000", background: CREAM, borderRadius: 999, padding: "0 26px", minHeight: 48, textDecoration: "none", transition: "background 250ms ease" }}>{cta}<span aria-hidden="true">→</span></a>
-                        <button type="button" className="sv-link" onClick={toTrack} style={{ fontFamily: FONT, fontSize: 13, fontWeight: 600, letterSpacing: "0.14em", textTransform: "uppercase", color: CREAM, background: "none", border: 0, padding: 0, minHeight: 44, cursor: "pointer" }}>
-                            <span style={{ borderBottom: "1px solid rgba(244,242,236,0.4)", paddingBottom: 4, transition: "border-color 200ms ease" }}>{track}</span>
-                        </button>
+                    <h1 className={inCls} style={{ ...anim(220), margin: 0, fontSize: "clamp(28px, 2.6vw, 38px)", lineHeight: 1.1, fontWeight: 400, letterSpacing: "-0.02em" }}>{title}</h1>
+                    <p className={inCls} style={{ ...anim(340), margin: 0, fontSize: "clamp(16px, 1.3vw, 19px)", lineHeight: 1.4, fontWeight: 400, color: "rgba(244,242,236,0.8)" }}>{line}</p>
+                    <div className={inCls} style={{ ...anim(460), display: "flex", flexWrap: "wrap", alignItems: "center", gap: "8px 22px", marginTop: 4, paddingTop: 12, borderTop: "1px solid rgba(244,242,236,0.12)" }}>
+                        <a className="sv-act" href={ctaLink} style={{ fontSize: 11, fontWeight: 600, letterSpacing: "0.18em", textTransform: "uppercase", color: CREAM, textDecoration: "none", minHeight: 36, display: "inline-flex", alignItems: "center" }}><span className="sv-arrow">{cta}<span aria-hidden="true">→</span></span></a>
+                        <button type="button" className="sv-act sv-act2" onClick={toTrack} style={{ fontFamily: FONT, fontSize: 11, fontWeight: 600, letterSpacing: "0.18em", textTransform: "uppercase", color: "rgba(244,242,236,0.7)", background: "none", border: 0, padding: 0, minHeight: 36, cursor: "pointer", transition: "color 200ms ease" }}><span className="sv-arrow">{track}<span aria-hidden="true">→</span></span></button>
                     </div>
-                    <div className={inCls} style={{ ...anim(600), display: "flex", flexDirection: "column", gap: 12, paddingTop: "clamp(18px, 3svh, 34px)", marginTop: 6, borderTop: "1px solid rgba(244,242,236,0.12)" }}>
-                        <div style={{ display: "flex", flexWrap: "wrap", gap: 10 }}>
+                    <div className={inCls} style={{ ...anim(600), display: "flex", flexDirection: "column", gap: 10, paddingTop: 18, marginTop: 6 }}>
+                        <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
                             {list.map((m) => (
-                                <span key={m} style={{ display: "inline-flex", alignItems: "center", padding: "7px 12px", border: `1px solid rgba(212,178,120,0.45)`, borderRadius: 6, fontSize: 12, fontWeight: 600, letterSpacing: "0.16em", color: BRASS, background: "rgba(212,178,120,0.06)" }}>{m}</span>
+                                <span key={m} style={{ display: "inline-flex", alignItems: "center", padding: "5px 9px", border: `1px solid rgba(212,178,120,0.4)`, borderRadius: 5, fontSize: 10, fontWeight: 600, letterSpacing: "0.16em", color: BRASS, background: "rgba(212,178,120,0.06)" }}>{m}</span>
                             ))}
                         </div>
-                        <p style={{ margin: 0, fontSize: 14, lineHeight: 1.55, color: "rgba(244,242,236,0.62)", maxWidth: 460 }}>{marksNote}</p>
+                        <p style={{ margin: 0, fontSize: 13, lineHeight: 1.55, color: "rgba(244,242,236,0.55)", maxWidth: 400 }}>{marksNote}</p>
                     </div>
                 </div>
 
