@@ -8,13 +8,16 @@ import { addPropertyControls, ControlType, RenderTarget } from "framer"
 
 const CREAM = "#f4f2ec"
 const BRASS = "#d4b278"
+const LOGO = "https://cdn.jsdelivr.net/gh/binhamdanisa/mint-photos@2ca651bb4e07e18a77714def7cfcd9a41c909635/logos/"
 const FONT = "'Bricolage Grotesque', sans-serif"
 
 interface Props {
     eyebrow: string
     title: string
     line: string
-    marks: string
+    awci?: string
+    wostep?: string
+    cmbj?: string
     marksNote: string
     cta: string
     ctaLink: string
@@ -119,7 +122,9 @@ export default function ServiceHero(props: Props) {
         eyebrow = "Watches and fine jewelry",
         title = "Service and Repair",
         line = "Your piece, in certified hands.",
-        marks = "CMW21, WOSTEP, CMBJ",
+        awci = "",
+        wostep = "",
+        cmbj = "",
         marksNote = "Watch work by CMW21 and WOSTEP certified watchmakers. Jewelry work by CMBJ certified bench jewelers.",
         cta = "Request service",
         ctaLink = "/service#request-service",
@@ -176,7 +181,11 @@ export default function ServiceHero(props: Props) {
     }
     const anim = (d: number): CSSProperties => (still ? {} : { animationDelay: d + "ms" })
     const inCls = still ? "" : "sv-in"
-    const list = marks.split(",").map((m) => m.trim()).filter(Boolean)
+    const logos = [
+        { src: awci || LOGO + "awci-mark.svg", alt: "AWCI, Certified Master Watchmaker of the 21st Century (CMW21)", h: 24 },
+        { src: wostep || LOGO + "wostep-mark.svg", alt: "WOSTEP certified watchmaker", h: 17 },
+        { src: cmbj || LOGO + "cmbj-mark.svg", alt: "JA Bench Professional Certification, Certified Master Bench Jeweler (CMBJ)", h: 52 },
+    ]
 
     return (
         <section style={{ position: "relative", width: "100%", background: "radial-gradient(120% 90% at 78% 40%, #1a1712 0%, #0b0b0a 55%, #000 100%)", color: CREAM, fontFamily: FONT, overflow: "hidden", ...style }}>
@@ -193,11 +202,13 @@ export default function ServiceHero(props: Props) {
                         <button type="button" className="sv-act sv-act2" onClick={toTrack} style={{ fontFamily: FONT, fontSize: 11, fontWeight: 600, letterSpacing: "0.18em", textTransform: "uppercase", color: "rgba(244,242,236,0.7)", background: "none", border: 0, padding: 0, minHeight: 36, cursor: "pointer", transition: "color 200ms ease" }}><span className="sv-arrow">{track}<span aria-hidden="true">→</span></span></button>
                     </div>
                     <div className={inCls} style={{ ...anim(600), display: "flex", flexDirection: "column", gap: 10, paddingTop: 18, marginTop: 6 }}>
-                        <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
-                            {list.map((m) => (
-                                <span key={m} style={{ display: "inline-flex", alignItems: "center", padding: "5px 9px", border: `1px solid rgba(212,178,120,0.4)`, borderRadius: 5, fontSize: 10, fontWeight: 600, letterSpacing: "0.16em", color: BRASS, background: "rgba(212,178,120,0.06)" }}>{m}</span>
+                        <ul aria-label="Certifications" style={{ listStyle: "none", margin: 0, padding: 0, display: "flex", flexWrap: "wrap", alignItems: "center", gap: "14px 0" }}>
+                            {logos.map((l, i) => (
+                                <li key={l.alt} style={{ display: "flex", alignItems: "center", height: 52, padding: i === 0 ? "0 22px 0 0" : "0 22px", borderLeft: i === 0 ? "none" : "1px solid rgba(244,242,236,0.14)", boxSizing: "border-box" }}>
+                                    <img src={l.src} alt={l.alt} title={l.alt} loading="lazy" decoding="async" style={{ display: "block", height: l.h, width: "auto", opacity: 0.88 }} />
+                                </li>
                             ))}
-                        </div>
+                        </ul>
                         <p style={{ margin: 0, fontSize: 13, lineHeight: 1.55, color: "rgba(244,242,236,0.55)", maxWidth: 400 }}>{marksNote}</p>
                     </div>
                 </div>
@@ -229,7 +240,9 @@ addPropertyControls(ServiceHero, {
     eyebrow: { type: ControlType.String, title: "Eyebrow", defaultValue: "Watches and fine jewelry" },
     title: { type: ControlType.String, title: "Title", defaultValue: "Service and Repair" },
     line: { type: ControlType.String, title: "Line", defaultValue: "Your piece, in certified hands." },
-    marks: { type: ControlType.String, title: "Hallmarks", defaultValue: "CMW21, WOSTEP, CMBJ" },
+    awci: { type: ControlType.Image, title: "AWCI logo" },
+    wostep: { type: ControlType.Image, title: "WOSTEP logo" },
+    cmbj: { type: ControlType.Image, title: "CMBJ logo" },
     marksNote: { type: ControlType.String, title: "Hallmark note", displayTextArea: true, defaultValue: "Watch work by CMW21 and WOSTEP certified watchmakers. Jewelry work by CMBJ certified bench jewelers." },
     cta: { type: ControlType.String, title: "Button", defaultValue: "Request service" },
     ctaLink: { type: ControlType.String, title: "Button link", defaultValue: "/service#request-service" },
