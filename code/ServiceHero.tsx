@@ -57,15 +57,17 @@ const CSS = `
 .sv-act:focus-visible{outline:1px solid ${BRASS};outline-offset:4px}
 .sv-shade{background:linear-gradient(90deg,rgba(0,0,0,.88) 0%,rgba(0,0,0,.66) 30%,rgba(0,0,0,.14) 60%,rgba(0,0,0,0) 100%),linear-gradient(0deg,rgba(0,0,0,.6) 0%,rgba(0,0,0,0) 42%)}
 .sv-copy{position:absolute;left:5vw;bottom:clamp(40px,9svh,96px);width:min(440px,90vw)}
-.sv-card{box-sizing:border-box;width:min(476px,90vw);padding:24px 26px 22px;border-radius:22px;
+.sv-card{box-sizing:border-box;width:auto;max-width:min(420px,90vw);padding:16px 20px 16px;border-radius:20px;gap:10px!important;
  background:rgba(255,255,255,.14);-webkit-backdrop-filter:blur(24px) saturate(160%);backdrop-filter:blur(24px) saturate(160%);
  border:1px solid rgba(255,255,255,.26);box-shadow:0 18px 40px -24px rgba(0,0,0,.55),inset 0 1px 0 rgba(255,255,255,.18)}
-.sv-screw{position:absolute;width:9px;height:9px;border-radius:50%;
- background:radial-gradient(circle at 35% 30%,#fbf6ea 0%,#d9c9a6 38%,#9c8a63 72%,#6f6044 100%);
- box-shadow:0 0 0 1px rgba(60,45,20,.35),0 1px 1.5px rgba(0,0,0,.25),inset 0 -1px 1px rgba(0,0,0,.18)}
-.sv-screw i{position:absolute;left:1.5px;right:1.5px;top:50%;height:1.4px;margin-top:-.7px;border-radius:1px;background:rgba(60,45,20,.75);box-shadow:0 .5px 0 rgba(255,255,255,.45)}
-.sv-s0{left:10px;top:10px}.sv-s1{right:10px;top:10px}.sv-s2{left:10px;bottom:10px}.sv-s3{right:10px;bottom:10px}
+
 .sv-marks li{height:52px}
+.sv-card .sv-marksblk{padding-top:10px!important;border-top:1px solid var(--sv-rule);gap:8px!important}
+.sv-card .sv-marks li{height:36px;padding-left:14px!important;padding-right:14px!important}
+.sv-card .sv-marks li:first-child{padding-left:0!important}
+.sv-card{--svlogo:.7}
+.sv-card .sv-note{font-size:11.5px!important;line-height:1.5!important;max-width:330px!important}
+.sv-card .sv-act{min-height:30px!important}
 .sv-loupe{position:absolute;left:0;top:0;border-radius:50%;pointer-events:none;background-repeat:no-repeat;will-change:transform,background-position;
  box-shadow:0 0 0 1.5px rgba(244,242,236,.85),0 0 0 7px rgba(10,10,10,.55),0 0 0 8px rgba(212,178,120,.55),0 24px 60px -10px rgba(0,0,0,.8),inset 0 0 30px rgba(0,0,0,.45)}
 .sv-loupe-wrap{position:absolute;left:0;top:0;will-change:transform}
@@ -77,10 +79,11 @@ const CSS = `
 @media (max-width:809px){
  .sv-shade{background:linear-gradient(0deg,rgba(0,0,0,.94) 0%,rgba(0,0,0,.74) 40%,rgba(0,0,0,.08) 68%,rgba(0,0,0,.3) 100%)}
  .sv-copy{left:20px;right:20px;width:auto;bottom:calc(env(safe-area-inset-bottom,0px) + 32px)}
- .sv-card{left:12px;right:12px;width:auto;padding:24px 22px 28px;bottom:calc(env(safe-area-inset-bottom,0px) + 20px)}
+ .sv-card{left:12px;right:12px;width:auto;max-width:none;padding:14px 16px 16px;bottom:calc(env(safe-area-inset-bottom,0px) + 16px)}
  .sv-marks li{height:44px;padding-left:16px!important;padding-right:16px!important}
  .sv-marks li:first-child{padding-left:0!important}
- .sv-marks img{transform:scale(.86);transform-origin:left center}
+ .sv-root{--svlogo:.86}
+ .sv-card{--svlogo:.7}
 }
 .sv-light .sv-shade{background:linear-gradient(0deg,var(--sv-bg) 0%,rgba(237,228,221,.75) 14%,rgba(237,228,221,0) 30%)}
 @media (max-width:809px){.sv-light .sv-shade{background:linear-gradient(0deg,var(--sv-bg) 0%,rgba(237,228,221,.9) 26%,rgba(237,228,221,0) 50%)}}
@@ -269,10 +272,6 @@ export default function ServiceHero(props: Props) {
             <div className="sv-hit" aria-hidden="true" />
 
             <div className={card ? "sv-copy sv-card" : "sv-copy"} style={{ display: "flex", flexDirection: "column", gap: 12, zIndex: 2 }}>
-                {card ? [18, -34, 71, 142].map((a, i) => (
-                    // Slotted screws in the corners, the way a bridge is held to a movement plate. Each sits at its own angle.
-                    <span key={i} aria-hidden="true" className={"sv-screw sv-s" + i}><i style={{ transform: `rotate(${a}deg)` }} /></span>
-                )) : null}
                 {showText ? (
                     <>
                         <span className={inCls} style={{ ...anim(150), display: "inline-flex", alignItems: "center", gap: 12, fontSize: 10, fontWeight: 600, letterSpacing: "0.3em", textTransform: "uppercase", color: BRASS }}>
@@ -289,15 +288,15 @@ export default function ServiceHero(props: Props) {
                     <a className="sv-act" href={ctaLink} style={{ fontSize: 11, fontWeight: 600, letterSpacing: "0.18em", textTransform: "uppercase", color: "var(--sv-ink)", textDecoration: "none", minHeight: 40, display: "inline-flex", alignItems: "center" }}><span className="sv-arrow">{cta}<span aria-hidden="true">→</span></span></a>
                     <button type="button" className="sv-act sv-act2" onClick={toTrack} style={{ fontFamily: FONT, fontSize: 11, fontWeight: 600, letterSpacing: "0.18em", textTransform: "uppercase", color: "var(--sv-ink2)", background: "none", border: 0, padding: 0, minHeight: 40, cursor: "pointer", transition: "color 200ms ease" }}><span className="sv-arrow">{track}<span aria-hidden="true">→</span></span></button>
                 </div>
-                <div className={inCls} style={{ ...anim(650), display: "flex", flexDirection: "column", gap: 10, paddingTop: 14 }}>
+                <div className={(inCls + " sv-marksblk").trim()} style={{ ...anim(650), display: "flex", flexDirection: "column", gap: 10, paddingTop: 14 }}>
                     <ul className="sv-marks" aria-label="Certifications" style={{ listStyle: "none", margin: 0, padding: 0, display: "flex", flexWrap: "nowrap", alignItems: "center" }}>
                         {logos.map((l, i) => (
                             <li key={l.alt} style={{ display: "flex", alignItems: "center", boxSizing: "border-box", padding: i === 0 ? "0 22px 0 0" : "0 22px", borderLeft: i === 0 ? "none" : "1px solid var(--sv-rule)" }}>
-                                <img src={l.src} alt={l.alt} title={l.alt} loading="lazy" decoding="async" style={{ display: "block", height: l.h, width: "auto", opacity: 0.9 }} />
+                                <img src={l.src} alt={l.alt} title={l.alt} loading="lazy" decoding="async" style={{ display: "block", height: `calc(${l.h}px * var(--svlogo, 1))`, width: "auto", opacity: 0.9 }} />
                             </li>
                         ))}
                     </ul>
-                    <p style={{ margin: 0, fontSize: 13, lineHeight: 1.55, color: "var(--sv-ink3)", maxWidth: 400 }}>{marksNote}</p>
+                    <p className="sv-note" style={{ margin: 0, fontSize: 13, lineHeight: 1.55, color: "var(--sv-ink3)", maxWidth: 400 }}>{marksNote}</p>
                 </div>
             </div>
         </section>
