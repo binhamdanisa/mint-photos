@@ -15,6 +15,7 @@ const FONT = "'Bricolage Grotesque', sans-serif"
 interface Props {
     photo?: string
     loupeImage?: string
+    loupe?: boolean
     natW: number
     natH: number
     focus: number
@@ -99,6 +100,7 @@ export default function ServiceHero(props: Props) {
     const {
         photo = "",
         loupeImage = "",
+        loupe = true,
         natW = 5690,
         natH = 3985,
         focus = 50,
@@ -136,7 +138,7 @@ export default function ServiceHero(props: Props) {
     // The large loupe photo waits until the page has appeared; until then the loupe uses the photo already on screen.
     const [bigReady, setBigReady] = useState(false)
     useEffect(() => {
-        if (typeof window === "undefined" || !loupeImage || loupeImage === photo) return
+        if (typeof window === "undefined" || !loupe || !loupeImage || loupeImage === photo) return
         let done = false
         const go = () => {
             if (done) return
@@ -149,7 +151,7 @@ export default function ServiceHero(props: Props) {
         if (document.readyState === "complete") later()
         else window.addEventListener("load", later, { once: true })
         return () => { done = true; window.removeEventListener("load", later) }
-    }, [loupeImage, photo])
+    }, [loupeImage, photo, loupe])
 
     useEffect(() => {
         if (typeof window === "undefined" || !window.matchMedia) return
@@ -214,7 +216,7 @@ export default function ServiceHero(props: Props) {
         const ro = typeof ResizeObserver !== "undefined" ? new ResizeObserver(() => { measure(); start() }) : null
         ro && ro.observe(el)
 
-        const hit = el.querySelector(".sv-hit") as HTMLElement | null
+        const hit = loupe ? (el.querySelector(".sv-hit") as HTMLElement | null) : null
         let down: { x: number; y: number; t: number } | null = null
         const move = (e: PointerEvent) => {
             if (e.pointerType !== "mouse") return
@@ -257,7 +259,7 @@ export default function ServiceHero(props: Props) {
             window.removeEventListener("scroll", onScroll)
             if (hit) { hit.removeEventListener("pointermove", move); hit.removeEventListener("pointerleave", leave); hit.removeEventListener("pointerdown", pdown); hit.removeEventListener("pointerup", pup); hit.removeEventListener("pointercancel", cancel) }
         }
-    }, [photo, big, still, natW, natH, focus, focusPhone, focusY, zoom, startX, startY, split, splitAt])
+    }, [photo, big, still, loupe, natW, natH, focus, focusPhone, focusY, zoom, startX, startY, split, splitAt])
 
     const toTrack = () => {
         if (typeof document === "undefined") return
@@ -280,14 +282,14 @@ export default function ServiceHero(props: Props) {
                     <>
                         <img src={photo} alt="A Swiss automatic watch movement up close: jewels, bridges, balance and rotor" className={still ? "" : "sv-photo"} fetchPriority="high" decoding="async" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: `var(--svfx,50%) var(--svfy,50%)` }} />
                         <style>{`.sv-stage img{--svfx:${focus}%;--svfy:${focusY}%}@media (max-width:809px){.sv-stage img{--svfx:${focusPhone}%;--svfy:50%}}`}</style>
-                        <div ref={wrap} className="sv-loupe-wrap" aria-hidden="true">
+                        <div ref={wrap} className="sv-loupe-wrap" aria-hidden="true" style={loupe ? undefined : { display: "none" }}>
                             <div ref={lens} className={"sv-loupe" + (still ? "" : " sv-loupe-in")} style={{ backgroundImage: `url("${bigReady ? big : photo}")` }} />
                         </div>
                     </>
                 ) : null}
             </div>
             <div className="sv-shade" aria-hidden="true" style={{ position: "absolute", inset: 0, pointerEvents: "none" }} />
-            <div className="sv-hit" aria-hidden="true" />
+            <div className="sv-hit" aria-hidden="true" style={loupe ? undefined : { cursor: "auto" }} />
 
             <div className={"sv-copy" + (card ? " sv-card" : "") + (split ? " sv-mid" : "")} style={{ display: "flex", flexDirection: "column", gap: 12, zIndex: 2 }}>
                 {showText ? (
@@ -323,7 +325,8 @@ export default function ServiceHero(props: Props) {
 
 addPropertyControls(ServiceHero, {
     photo: { type: ControlType.Image, title: "Photo" },
-    loupeImage: { type: ControlType.Image, title: "Loupe photo (large)" },
+    loupe: { type: ControlType.Boolean, title: "Loupe", defaultValue: true },
+    loupeImage: { type: ControlType.Image, title: "Loupe photo (large)", hidden: (p: any) => p.loupe === false },
     natW: { type: ControlType.Number, title: "Photo width", min: 100, max: 20000, step: 1, defaultValue: 5690 },
     natH: { type: ControlType.Number, title: "Photo height", min: 100, max: 20000, step: 1, defaultValue: 3985 },
     focus: { type: ControlType.Number, title: "Focus X", min: 0, max: 100, step: 1, unit: "%", defaultValue: 50 },
