@@ -80,9 +80,9 @@ export default function ServicesAndPrices(props: Props) {
             <style>{`
 .sp-wrap{max-width:1100px;margin:0 auto;padding:clamp(56px,8vw,112px) clamp(20px,5vw,56px) clamp(72px,9vw,120px)}
 .sp-head{display:flex;justify-content:space-between;align-items:flex-end;gap:28px;flex-wrap:wrap}
-.sp-glass{background:rgba(255,255,255,.5);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.75);box-shadow:0 18px 40px -30px rgba(60,48,36,.35),inset 0 1px 0 rgba(255,255,255,.6)}
+.sp-glass{background:rgba(255,255,255,.36);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.62);box-shadow:0 10px 28px -24px rgba(60,48,36,.3),inset 0 1px 0 rgba(255,255,255,.5)}
 .sp-tabs{display:inline-flex;padding:5px;border-radius:999px}
-.sp-tab{appearance:none;border:0;cursor:pointer;font-family:${FONT};font-size:14px;font-weight:500;padding:11px 22px;border-radius:999px;color:${INK2};background:transparent;transition:background-color 320ms cubic-bezier(.22,1,.36,1),color 320ms ease}
+.sp-tab{appearance:none;border:0;cursor:pointer;font-family:${FONT};font-size:13.5px;font-weight:500;padding:9px 20px;border-radius:999px;color:${INK2};background:transparent;transition:background-color 320ms cubic-bezier(.22,1,.36,1),color 320ms ease}
 .sp-tab.on{background:${INK};color:${CREAM}}
 .sp-tab:focus-visible,.sp-chip:focus-visible{outline:1px solid ${BRASS};outline-offset:3px}
 .sp-finder{margin-top:40px;display:flex;flex-wrap:wrap;align-items:center;gap:10px}
@@ -90,29 +90,31 @@ export default function ServicesAndPrices(props: Props) {
 .sp-chips-wrap{position:relative;display:contents}
 .sp-chips{display:contents}
 .sp-more{display:none}
-.sp-chip{appearance:none;cursor:pointer;font-family:${FONT};font-size:13.5px;padding:9px 16px;border-radius:999px;color:${INK};transition:background-color 240ms ease,color 240ms ease,border-color 240ms ease}
+.sp-chip{appearance:none;cursor:pointer;font-family:${FONT};font-size:13px;padding:8px 14px;border-radius:999px;color:${INK};transition:background-color 240ms ease,color 240ms ease,border-color 240ms ease}
 .sp-chip:hover{background:rgba(255,255,255,.8)}
 .sp-chip.on{background:${INK};border-color:${INK};color:${CREAM}}
-.sp-list{margin-top:32px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
-.sp-row{position:relative;display:flex;flex-direction:column;gap:10px;padding:26px 28px;border-radius:22px;transition:opacity 300ms ease,box-shadow 300ms ease,transform 300ms ease}
+.sp-list{margin-top:28px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.sp-row{position:relative;display:flex;flex-direction:column;gap:8px;padding:22px 24px;border-radius:18px;transition:opacity 300ms ease,box-shadow 300ms ease,transform 300ms ease}
 .sp-dim .sp-row{opacity:.45}
-.sp-dim .sp-row.hit{opacity:1;box-shadow:0 0 0 1.5px ${BRASS},0 22px 44px -28px rgba(60,48,36,.45)}
-.sp-top{display:flex;justify-content:space-between;align-items:baseline;gap:16px}
-.sp-name{font-size:19px;font-weight:500;letter-spacing:-.01em;line-height:1.3;color:${INK}}
+.sp-dim .sp-row.hit{opacity:1;box-shadow:0 0 0 1px ${BRASS},0 14px 32px -24px rgba(60,48,36,.4)}
+.sp-top{display:flex;justify-content:space-between;align-items:flex-start;gap:16px}
+.sp-meta{display:flex;flex-direction:column;align-items:flex-end;gap:3px;flex:0 0 auto}
+.sp-name{font-size:17px;font-weight:500;letter-spacing:-.01em;line-height:1.3;color:${INK}}
 .sp-tag{display:block;margin-top:4px;font-size:10px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:${BRASS}}
-.sp-what{font-size:14.5px;line-height:1.6;color:${INK2}}
-.sp-from{font-size:16px;font-weight:500;color:${INK};white-space:nowrap;font-variant-numeric:tabular-nums}
+.sp-what{font-size:14px;line-height:1.6;color:${INK2};max-width:46ch}
+.sp-from{font-size:15px;font-weight:500;color:${INK};white-space:nowrap;font-variant-numeric:tabular-nums}
 .sp-from.free{color:${BRASS}}
-.sp-time{display:inline-flex;align-items:center;gap:7px;margin-top:auto;padding-top:4px;font-size:13px;color:${INK3}}
-.sp-goodbox{margin-top:56px;padding:34px 36px;border-radius:26px}
-.sp-good{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:36px;margin-top:22px}
-.sp-pt{font-size:14.5px;line-height:1.6;color:${INK2}}
+.sp-time{font-size:12px;letter-spacing:.01em;color:${INK3};white-space:nowrap}
+.sp-goodbox{margin-top:44px;padding:28px 30px;border-radius:20px}
+.sp-good{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:32px;margin-top:18px}
+.sp-pt{font-size:14px;line-height:1.6;color:${INK2}}
 .sp-pt b{display:block;font-size:11px;font-weight:600;letter-spacing:.2em;color:${BRASS};margin-bottom:8px}
 @media (max-width:809px){
  .sp-list{grid-template-columns:1fr;gap:12px}
- .sp-row{padding:22px 22px;border-radius:20px}
- .sp-name{font-size:17px}
- .sp-goodbox{margin-top:40px;padding:26px 22px;border-radius:22px}
+ .sp-list{gap:10px}
+ .sp-row{padding:20px 20px;border-radius:16px}
+ .sp-name{font-size:16px}
+ .sp-goodbox{margin-top:32px;padding:24px 20px;border-radius:18px}
  .sp-good{grid-template-columns:1fr;gap:22px;margin-top:18px}
  .sp-finder{margin-top:30px;display:block}
  .sp-flabel{display:block;margin:0 0 12px}
@@ -168,15 +170,12 @@ export default function ServicesAndPrices(props: Props) {
                             <div key={r.name} className={"sp-row sp-glass" + (hit ? " hit" : "")}>
                                 <div className="sp-top">
                                     <div className="sp-name">{r.name}{hit ? <span className="sp-tag">Recommended</span> : null}</div>
-                                    <div className={"sp-from" + (free ? " free" : "")}>{r.from}</div>
+                                    <div className="sp-meta">
+                                        <div className={"sp-from" + (free ? " free" : "")}>{r.from}</div>
+                                        {r.time ? <div className="sp-time">{r.time}</div> : null}
+                                    </div>
                                 </div>
                                 <div className="sp-what">{r.what}</div>
-                                {r.time ? (
-                                    <div className="sp-time">
-                                        <svg width="13" height="13" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" strokeWidth="1.6" /><path d="M12 7.5V12l3 2" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" /></svg>
-                                        {r.time}
-                                    </div>
-                                ) : null}
                             </div>
                         )
                     })}
@@ -184,7 +183,7 @@ export default function ServicesAndPrices(props: Props) {
 
                 {points.length ? (
                     <div className="sp-goodbox sp-glass">
-                        <h3 style={{ margin: 0, fontSize: 18, fontWeight: 500, letterSpacing: "-0.01em" }}>{goodTitle}</h3>
+                        <h3 style={{ margin: 0, fontSize: 16, fontWeight: 500, letterSpacing: "-0.01em" }}>{goodTitle}</h3>
                         <div className="sp-good">
                             {points.map((p, i) => (
                                 <div key={i} className="sp-pt"><b>{String(i + 1).padStart(2, "0")}</b>{p}</div>
