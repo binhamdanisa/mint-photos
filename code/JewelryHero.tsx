@@ -35,11 +35,14 @@ const CSS = `
 @keyframes mhUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
 @keyframes mhCue{0%,100%{transform:translateY(0);opacity:.5}50%{transform:translateY(6px);opacity:1}}
 .mh-in{opacity:0;animation:mhUp 1.2s cubic-bezier(.22,1,.36,1) forwards}
-.mh-cta:hover{background:${CREAM}!important;color:#000!important}
+.mh-cta:hover{background:#fff!important;color:#000!important}
 .mh-cta:focus-visible,.mh-link:focus-visible,.mh-chap:focus-visible{outline:1px solid ${CHAMPAGNE};outline-offset:4px}
 .mh-link:hover span{border-bottom-color:${CREAM}!important}
 .mh-chap:hover{opacity:1!important}
 .mh-word{width:min(94vw,1500px);height:auto;display:block;overflow:visible}
+.mh-glass{background:rgba(12,12,12,0.42);-webkit-backdrop-filter:blur(16px) saturate(125%);backdrop-filter:blur(16px) saturate(125%);border:1px solid rgba(255,255,255,0.12);border-radius:22px}
+.mh-story{padding:0 5vw clamp(24px,4.5svh,48px)}
+@media (max-width:809px){.mh-story{padding:0 14px calc(env(safe-area-inset-bottom,0px) + 112px)}.mh-rail{display:none!important}}
 @media (max-width:900px){.mh-word{height:min(32svh,340px)}}
 @media (max-width:640px){.mh-word{height:min(40svh,330px)}}
 `
@@ -209,19 +212,19 @@ export default function JewelryHero(props: Props) {
 
                 {/* act 3: the story */}
                 <div ref={shade} aria-hidden="true" style={{ position: "absolute", inset: 0, background: "linear-gradient(0deg, rgba(0,0,0,0.62) 0%, rgba(0,0,0,0.18) 22%, rgba(0,0,0,0) 36%), linear-gradient(180deg, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0) 18%)", opacity: showStory ? 1 : 0, pointerEvents: "none", zIndex: 1 }} />
-                <div ref={story} style={{ position: "absolute", left: 0, right: 0, bottom: 0, zIndex: 3, padding: "0 5vw clamp(24px, 4.5svh, 48px)", display: "flex", flexWrap: "wrap", alignItems: "flex-end", justifyContent: "space-between", gap: "clamp(24px, 4vw, 64px)", ...storyStatic }}>
-                    <div style={{ display: "flex", flexDirection: "column", gap: "clamp(8px, 0.9vw, 12px)", maxWidth: 520, flex: "1 1 300px", textShadow: "0 1px 14px rgba(0,0,0,0.45)" }}>
-                        <span style={{ fontSize: 11, fontWeight: 500, letterSpacing: "0.32em", textTransform: "uppercase", color: CHAMPAGNE }}>{eyebrow}</span>
+                <div ref={story} className="mh-story" style={{ position: "absolute", left: 0, right: 0, bottom: 0, zIndex: 3, display: "flex", flexWrap: "wrap", alignItems: "flex-end", justifyContent: "space-between", gap: "clamp(24px, 4vw, 64px)", ...storyStatic }}>
+                    <div className="mh-glass" style={{ display: "flex", flexDirection: "column", gap: "clamp(8px, 0.9vw, 12px)", maxWidth: 480, flex: "0 1 480px", padding: "clamp(18px, 1.8vw, 24px) clamp(18px, 2vw, 28px)" }}>
+                        <span style={{ fontSize: 11, fontWeight: 600, letterSpacing: "0.28em", textTransform: "uppercase", color: CHAMPAGNE }}>{eyebrow}</span>
                         {title ? <h1 style={{ margin: 0, fontSize: "clamp(34px, 4.6vw, 72px)", lineHeight: 1, fontWeight: 300, letterSpacing: "-0.03em", fontVariationSettings: "'opsz' 96" }}>{title}</h1> : null}
-                        <h1 style={{ margin: 0, fontSize: "clamp(18px, 1.6vw, 24px)", lineHeight: 1.35, fontWeight: 400, letterSpacing: "-0.01em", color: CREAM }}>{sub}</h1>
+                        <h1 style={{ margin: 0, fontSize: "clamp(19px, 1.6vw, 24px)", lineHeight: 1.3, fontWeight: 500, letterSpacing: "-0.01em", color: CREAM }}>{sub}</h1>
                         <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: "12px 26px", marginTop: 4 }}>
-                            <button type="button" className="mh-cta" onClick={() => scrollTo("shop")} style={{ fontFamily: FONT, fontSize: 11, fontWeight: 500, letterSpacing: "0.2em", textTransform: "uppercase", color: CREAM, background: "rgba(0,0,0,0.2)", border: "1px solid rgba(244,242,236,0.75)", borderRadius: 999, padding: "0 22px", minHeight: 42, cursor: "pointer", transition: "background 300ms ease, color 300ms ease", backdropFilter: "blur(6px)", WebkitBackdropFilter: "blur(6px)" }}>{cta}</button>
+                            <button type="button" className="mh-cta" onClick={() => scrollTo("shop")} style={{ fontFamily: FONT, fontSize: 11, fontWeight: 500, letterSpacing: "0.2em", textTransform: "uppercase", color: "#000", background: CREAM, border: "1px solid " + CREAM, borderRadius: 999, padding: "0 22px", minHeight: 42, cursor: "pointer", transition: "background 300ms ease, color 300ms ease", backdropFilter: "blur(6px)", WebkitBackdropFilter: "blur(6px)" }}>{cta}</button>
                             <button type="button" className="mh-link" onClick={() => scrollTo("bespoke")} style={{ fontFamily: FONT, fontSize: 11, fontWeight: 500, letterSpacing: "0.2em", textTransform: "uppercase", color: CREAM, background: "none", border: 0, padding: 0, minHeight: 44, cursor: "pointer" }}>
                                 <span style={{ borderBottom: "1px solid rgba(244,242,236,0.45)", paddingBottom: 4, transition: "border-color 200ms ease" }}>{link}</span>
                             </button>
                         </div>
                     </div>
-                    <ol aria-label="The making of the piece" style={{ textShadow: "0 1px 12px rgba(0,0,0,0.45)", listStyle: "none", margin: 0, padding: 0, display: "grid", gridTemplateColumns: "repeat(4, minmax(0, 1fr))", gap: "clamp(10px, 1.6vw, 22px)", flex: "1 1 300px", maxWidth: 520 }}>
+                    <ol className="mh-rail mh-glass" aria-label="The making of the piece" style={{ listStyle: "none", margin: 0, padding: "16px 20px 14px", display: "grid", gridTemplateColumns: "repeat(4, minmax(0, 1fr))", gap: "clamp(10px, 1.6vw, 22px)", flex: "1 1 300px", maxWidth: 520 }}>
                         {CHAPTERS.map((c, i) => {
                             const on = i === chap
                             return (
