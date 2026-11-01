@@ -1,4 +1,4 @@
-import { useMemo, useState, type CSSProperties } from "react"
+import { useEffect, useMemo, useRef, useState, type CSSProperties } from "react"
 import { addPropertyControls, ControlType } from "framer"
 
 // Service page: watch and jewelry price lists in one dark section with a Watches | Jewelry switch,
@@ -47,6 +47,30 @@ export default function ServicesAndPrices(props: Props) {
 
     const switchTab = (t: "watch" | "jewelry") => { setTab(t); setPick(null) }
 
+    // Phones: the symptom chips scroll sideways. Fades and an arrow show there is more, and the row nudges once on first view.
+    const chips = useRef<HTMLDivElement>(null)
+    const [edge, setEdge] = useState({ start: true, end: false, scrolls: false })
+    useEffect(() => {
+        const el = chips.current
+        if (!el || typeof window === "undefined") return
+        const read = () => setEdge({ start: el.scrollLeft < 4, end: el.scrollLeft + el.clientWidth >= el.scrollWidth - 4, scrolls: el.scrollWidth > el.clientWidth + 4 })
+        read()
+        el.addEventListener("scroll", read, { passive: true })
+        window.addEventListener("resize", read)
+        let io: IntersectionObserver | null = null
+        const reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches
+        if (!reduce && typeof IntersectionObserver !== "undefined") {
+            io = new IntersectionObserver(([e]) => {
+                if (!e.isIntersecting || el.scrollWidth <= el.clientWidth + 4) return
+                io && io.disconnect()
+                setTimeout(() => { el.scrollBy({ left: 72, behavior: "smooth" }); setTimeout(() => el.scrollTo({ left: 0, behavior: "smooth" }), 650) }, 400)
+            }, { threshold: 0.8 })
+            io.observe(el)
+        }
+        return () => { el.removeEventListener("scroll", read); window.removeEventListener("resize", read); io && io.disconnect() }
+    }, [tab, pairs.length])
+    const more = () => { const el = chips.current; if (el) el.scrollBy({ left: Math.round(el.clientWidth * 0.7), behavior: "smooth" }) }
+
     return (
         <section style={{ width: "100%", background: BG, color: CREAM, fontFamily: FONT, boxSizing: "border-box", ...style }} className="sp-root">
             <style>{`
@@ -57,6 +81,10 @@ export default function ServicesAndPrices(props: Props) {
 .sp-tab.on{background:${CREAM};color:rgb(29,29,31);box-shadow:inset 0 0 0 1px rgba(212,178,120,.55)}
 .sp-tab:focus-visible,.sp-chip:focus-visible{outline:1px solid ${BRASS};outline-offset:3px}
 .sp-finder{margin-top:44px;display:flex;flex-wrap:wrap;align-items:center;gap:10px}
+.sp-flabel{font-size:13.5px;color:rgba(244,242,236,.55);margin-right:6px}
+.sp-chips-wrap{position:relative;display:contents}
+.sp-chips{display:contents}
+.sp-more{display:none}
 .sp-chip{appearance:none;cursor:pointer;font-family:${FONT};font-size:13.5px;padding:9px 15px;border-radius:999px;border:1px solid rgba(244,242,236,.18);background:transparent;color:rgba(244,242,236,.82);transition:border-color 240ms ease,background-color 240ms ease,color 240ms ease}
 .sp-chip:hover{border-color:rgba(244,242,236,.4)}
 .sp-chip.on{border-color:${BRASS};background:rgba(212,178,120,.12);color:${CREAM}}
@@ -82,9 +110,17 @@ export default function ServicesAndPrices(props: Props) {
  .sp-name{font-size:17px}
  .sp-row::before{left:-12px}
  .sp-good{grid-template-columns:1fr;gap:20px}
- .sp-finder{margin-top:32px;flex-wrap:nowrap;overflow-x:auto;margin-left:-20px;margin-right:-20px;padding:2px 20px 6px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
- .sp-finder::-webkit-scrollbar{display:none}
- .sp-finder>*{flex:0 0 auto}
+ .sp-finder{margin-top:32px;display:block}
+ .sp-flabel{display:block;margin:0 0 12px}
+ .sp-chips-wrap{display:block;position:relative;margin:0 -20px}
+ .sp-chips{display:flex;gap:8px;flex-wrap:nowrap;overflow-x:auto;padding:2px 20px 6px;scrollbar-width:none;-webkit-overflow-scrolling:touch;scroll-snap-type:x proximity}
+ .sp-chips::-webkit-scrollbar{display:none}
+ .sp-chips>*{flex:0 0 auto;scroll-snap-align:start}
+ .sp-chips-wrap::before,.sp-chips-wrap::after{content:"";position:absolute;top:0;bottom:6px;width:56px;pointer-events:none;opacity:0;transition:opacity 220ms ease;z-index:1}
+ .sp-chips-wrap::before{left:0;background:linear-gradient(90deg,${BG},rgba(23,25,22,0))}
+ .sp-chips-wrap::after{right:0;width:88px;background:linear-gradient(270deg,${BG} 40%,rgba(23,25,22,0))}
+ .sp-chips-wrap.fade-l::before,.sp-chips-wrap.fade-r::after{opacity:1}
+ .sp-more{display:grid;place-items:center;position:absolute;right:14px;top:50%;margin-top:-20px;width:34px;height:34px;border-radius:50%;border:1px solid rgba(212,178,120,.6);background:rgba(23,25,22,.9);color:${BRASS};cursor:pointer;z-index:2;padding:0;-webkit-tap-highlight-color:transparent}
 }
 `}</style>
             <div className="sp-wrap">
@@ -104,10 +140,19 @@ export default function ServicesAndPrices(props: Props) {
 
                 {tab === "watch" && pairs.length ? (
                     <div className="sp-finder" aria-label={finderTitle}>
-                        <span style={{ fontSize: 13.5, color: "rgba(244,242,236,0.55)", marginRight: 6 }}>{finderTitle}</span>
-                        {pairs.map((p, i) => (
-                            <button key={p.notice} type="button" aria-pressed={pick === i} className={"sp-chip" + (pick === i ? " on" : "")} onClick={() => setPick(pick === i ? null : i)}>{p.notice}</button>
-                        ))}
+                        <span className="sp-flabel">{finderTitle}</span>
+                        <div className={"sp-chips-wrap" + (edge.scrolls && !edge.start ? " fade-l" : "") + (edge.scrolls && !edge.end ? " fade-r" : "")}>
+                            <div className="sp-chips" ref={chips}>
+                                {pairs.map((p, i) => (
+                                    <button key={p.notice} type="button" aria-pressed={pick === i} className={"sp-chip" + (pick === i ? " on" : "")} onClick={() => setPick(pick === i ? null : i)}>{p.notice}</button>
+                                ))}
+                            </div>
+                            {edge.scrolls && !edge.end ? (
+                                <button type="button" className="sp-more" aria-label="More symptoms" onClick={more}>
+                                    <svg width="14" height="14" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>
+                                </button>
+                            ) : null}
+                        </div>
                     </div>
                 ) : null}
 
