@@ -21,6 +21,7 @@ interface Props {
     sub: string
     cta: string
     link: string
+    intro?: boolean
     style?: CSSProperties
 }
 
@@ -70,6 +71,7 @@ export default function JewelryHero(props: Props) {
         sub = "From the first sketch to the final stone.",
         cta = "Discover the collection",
         link = "Begin a commission",
+        intro = false,
         style,
     } = props
 
@@ -84,7 +86,7 @@ export default function JewelryHero(props: Props) {
     const [reduce, setReduce] = useState(false)
     const canvas = RenderTarget.current() === RenderTarget.canvas
     const still = reduce || canvas
-    const pinned = !still
+    const pinned = !still && intro
     const mode = useRef<"rest" | "story">("rest")
 
     useEffect(() => {
@@ -105,7 +107,7 @@ export default function JewelryHero(props: Props) {
         if (!reduce) play()
         const io = typeof IntersectionObserver !== "undefined" ? new IntersectionObserver(([e]) => (e.isIntersecting && !reduce ? play() : el.pause()), { threshold: 0.05 }) : null
         io && io.observe(el)
-        if (reduce) mode.current = "story"
+        if (reduce || !intro) mode.current = "story"
         const start = () => { if (mode.current === "rest") { try { el.currentTime = REST_LOOP[0] } catch (e) {} } }
         if (el.readyState >= 1) start(); else el.addEventListener("loadedmetadata", start, { once: true })
         let raf = 0, last = -1
@@ -122,7 +124,7 @@ export default function JewelryHero(props: Props) {
         }
         raf = requestAnimationFrame(loop)
         return () => { io && io.disconnect(); cancelAnimationFrame(raf) }
-    }, [canvas, reduce, video])
+    }, [canvas, reduce, video, intro])
 
     // Scroll choreography.
     useEffect(() => {
@@ -174,8 +176,9 @@ export default function JewelryHero(props: Props) {
     }
 
     const media: CSSProperties = { position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }
-    const restVisible = !reduce // canvas shows the opening composition; reduced motion shows the story straight away
-    const storyStatic: CSSProperties = still && !canvas ? { opacity: 1, pointerEvents: "auto" } : canvas ? { opacity: 0, pointerEvents: "none" } : { opacity: 0, pointerEvents: "none" }
+    const restVisible = intro && !reduce // canvas shows the opening composition; reduced motion shows the story straight away
+    const showStory = !intro || (still && !canvas)
+    const storyStatic: CSSProperties = showStory ? { opacity: 1, pointerEvents: "auto" } : canvas ? { opacity: 0, pointerEvents: "none" } : { opacity: 0, pointerEvents: "none" }
 
     return (
         <div ref={root} style={{ position: "relative", width: "100%", height: pinned ? "240svh" : "auto", background: "#000", color: CREAM, fontFamily: FONT, ...style }}>
@@ -205,7 +208,7 @@ export default function JewelryHero(props: Props) {
                 ) : null}
 
                 {/* act 3: the story */}
-                <div ref={shade} aria-hidden="true" style={{ position: "absolute", inset: 0, background: "linear-gradient(0deg, rgba(0,0,0,0.82) 0%, rgba(0,0,0,0.35) 34%, rgba(0,0,0,0) 58%), linear-gradient(180deg, rgba(0,0,0,0.45) 0%, rgba(0,0,0,0) 22%)", opacity: still && !canvas ? 1 : 0, pointerEvents: "none", zIndex: 1 }} />
+                <div ref={shade} aria-hidden="true" style={{ position: "absolute", inset: 0, background: "linear-gradient(0deg, rgba(0,0,0,0.82) 0%, rgba(0,0,0,0.35) 34%, rgba(0,0,0,0) 58%), linear-gradient(180deg, rgba(0,0,0,0.45) 0%, rgba(0,0,0,0) 22%)", opacity: showStory ? 1 : 0, pointerEvents: "none", zIndex: 1 }} />
                 <div ref={story} style={{ position: "absolute", left: 0, right: 0, bottom: 0, zIndex: 3, padding: "0 6vw clamp(28px, 6svh, 64px)", display: "flex", flexWrap: "wrap", alignItems: "flex-end", justifyContent: "space-between", gap: "clamp(24px, 4vw, 64px)", ...storyStatic }}>
                     <div style={{ display: "flex", flexDirection: "column", gap: "clamp(10px, 1.2vw, 16px)", maxWidth: 560, flex: "1 1 320px" }}>
                         <h1 style={{ margin: 0, fontSize: "clamp(34px, 4.6vw, 72px)", lineHeight: 1, fontWeight: 300, letterSpacing: "-0.03em", fontVariationSettings: "'opsz' 96" }}>{title}</h1>
@@ -249,4 +252,5 @@ addPropertyControls(JewelryHero, {
     sub: { type: ControlType.String, title: "Subtitle", defaultValue: "From the first sketch to the final stone." },
     cta: { type: ControlType.String, title: "Button", defaultValue: "Discover the collection" },
     link: { type: ControlType.String, title: "Link", defaultValue: "Begin a commission" },
+    intro: { type: ControlType.Boolean, title: "Word intro", defaultValue: false },
 })
