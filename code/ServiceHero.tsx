@@ -22,6 +22,7 @@ interface Props {
     zoom: number
     startX: number
     startY: number
+    showText: boolean
     eyebrow: string
     title: string
     line: string
@@ -81,6 +82,7 @@ export default function ServiceHero(props: Props) {
         zoom = 2.4,
         startX = 66,
         startY = 31,
+        showText = true,
         eyebrow = "Watches and fine jewelry",
         title = "Service and Repair",
         line = "Your piece, in certified hands.",
@@ -227,12 +229,19 @@ export default function ServiceHero(props: Props) {
             <div className="sv-hit" aria-hidden="true" />
 
             <div className="sv-copy" style={{ display: "flex", flexDirection: "column", gap: 12, zIndex: 2 }}>
-                <span className={inCls} style={{ ...anim(150), display: "inline-flex", alignItems: "center", gap: 12, fontSize: 10, fontWeight: 600, letterSpacing: "0.3em", textTransform: "uppercase", color: BRASS }}>
-                    <span style={{ width: 26, height: 1, background: BRASS, opacity: 0.7 }} />{eyebrow}
-                </span>
-                <h1 className={inCls} style={{ ...anim(270), margin: 0, fontSize: "clamp(28px, 2.6vw, 38px)", lineHeight: 1.1, fontWeight: 400, letterSpacing: "-0.02em" }}>{title}</h1>
-                <p className={inCls} style={{ ...anim(390), margin: 0, fontSize: "clamp(16px, 1.3vw, 19px)", lineHeight: 1.4, fontWeight: 400, color: "rgba(244,242,236,0.85)" }}>{line}</p>
-                <div className={inCls} style={{ ...anim(510), display: "flex", flexWrap: "wrap", alignItems: "center", gap: "8px 22px", marginTop: 4, paddingTop: 12, borderTop: "1px solid rgba(244,242,236,0.16)" }}>
+                {showText ? (
+                    <>
+                        <span className={inCls} style={{ ...anim(150), display: "inline-flex", alignItems: "center", gap: 12, fontSize: 10, fontWeight: 600, letterSpacing: "0.3em", textTransform: "uppercase", color: BRASS }}>
+                            <span style={{ width: 26, height: 1, background: BRASS, opacity: 0.7 }} />{eyebrow}
+                        </span>
+                        <h1 className={inCls} style={{ ...anim(270), margin: 0, fontSize: "clamp(28px, 2.6vw, 38px)", lineHeight: 1.1, fontWeight: 400, letterSpacing: "-0.02em" }}>{title}</h1>
+                        <p className={inCls} style={{ ...anim(390), margin: 0, fontSize: "clamp(16px, 1.3vw, 19px)", lineHeight: 1.4, fontWeight: 400, color: "rgba(244,242,236,0.85)" }}>{line}</p>
+                    </>
+                ) : (
+                    // Not shown, but kept for search engines and screen readers.
+                    <h1 style={{ position: "absolute", width: 1, height: 1, padding: 0, margin: -1, overflow: "hidden", clip: "rect(0 0 0 0)", whiteSpace: "nowrap", border: 0 }}>{title}</h1>
+                )}
+                <div className={inCls} style={{ ...anim(showText ? 510 : 200), display: "flex", flexWrap: "wrap", alignItems: "center", gap: "8px 22px", marginTop: showText ? 4 : 0, paddingTop: showText ? 12 : 0, borderTop: showText ? "1px solid rgba(244,242,236,0.16)" : "none" }}>
                     <a className="sv-act" href={ctaLink} style={{ fontSize: 11, fontWeight: 600, letterSpacing: "0.18em", textTransform: "uppercase", color: CREAM, textDecoration: "none", minHeight: 40, display: "inline-flex", alignItems: "center" }}><span className="sv-arrow">{cta}<span aria-hidden="true">→</span></span></a>
                     <button type="button" className="sv-act sv-act2" onClick={toTrack} style={{ fontFamily: FONT, fontSize: 11, fontWeight: 600, letterSpacing: "0.18em", textTransform: "uppercase", color: "rgba(244,242,236,0.72)", background: "none", border: 0, padding: 0, minHeight: 40, cursor: "pointer", transition: "color 200ms ease" }}><span className="sv-arrow">{track}<span aria-hidden="true">→</span></span></button>
                 </div>
@@ -261,6 +270,7 @@ addPropertyControls(ServiceHero, {
     zoom: { type: ControlType.Number, title: "Loupe zoom", min: 1.2, max: 5, step: 0.1, defaultValue: 2.4 },
     startX: { type: ControlType.Number, title: "Loupe start X", min: 0, max: 100, step: 1, unit: "%", defaultValue: 66 },
     startY: { type: ControlType.Number, title: "Loupe start Y", min: 0, max: 100, step: 1, unit: "%", defaultValue: 31 },
+    showText: { type: ControlType.Boolean, title: "Headline", defaultValue: true, enabledTitle: "Show", disabledTitle: "Hide" },
     eyebrow: { type: ControlType.String, title: "Eyebrow", defaultValue: "Watches and fine jewelry" },
     title: { type: ControlType.String, title: "Title", defaultValue: "Service and Repair" },
     line: { type: ControlType.String, title: "Line", defaultValue: "Your piece, in certified hands." },
