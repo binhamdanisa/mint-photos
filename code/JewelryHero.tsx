@@ -67,8 +67,8 @@ export default function JewelryHero(props: Props) {
         word = "JEWELRY",
         eyebrow = "Fine jewelry · Bespoke",
         line = "Every link set with diamonds. Every commission made by hand.",
-        title = "The Infinity Cuban",
-        sub = "From the first sketch to the final stone.",
+        title = "",
+        sub = "Drawn by hand, set stone by stone.",
         cta = "Discover the collection",
         link = "Begin a commission",
         intro = false,
@@ -186,7 +186,7 @@ export default function JewelryHero(props: Props) {
             <div style={{ position: pinned ? "sticky" : "relative", top: 0, height: "100svh", minHeight: 560, overflow: "hidden", isolation: "isolate", background: "#000" }}>
                 {/* the film */}
                 {poster ? <img src={poster} alt="" aria-hidden="true" style={media} /> : null}
-                {video && !canvas ? <video ref={vid} src={video} poster={poster || undefined} muted loop playsInline autoPlay={!reduce} preload="auto" aria-label="The Infinity Cuban, from the first sketch to the final stone" style={media} /> : null}
+                {video && !canvas ? <video ref={vid} src={video} poster={poster || undefined} muted loop playsInline autoPlay={!reduce} preload="auto" aria-label="A diamond chain, from the first sketch to the final stone" style={media} /> : null}
 
                 {/* act 1: the word, with the film showing only through its letters */}
                 {restVisible ? (
@@ -208,19 +208,20 @@ export default function JewelryHero(props: Props) {
                 ) : null}
 
                 {/* act 3: the story */}
-                <div ref={shade} aria-hidden="true" style={{ position: "absolute", inset: 0, background: "linear-gradient(0deg, rgba(0,0,0,0.82) 0%, rgba(0,0,0,0.35) 34%, rgba(0,0,0,0) 58%), linear-gradient(180deg, rgba(0,0,0,0.45) 0%, rgba(0,0,0,0) 22%)", opacity: showStory ? 1 : 0, pointerEvents: "none", zIndex: 1 }} />
-                <div ref={story} style={{ position: "absolute", left: 0, right: 0, bottom: 0, zIndex: 3, padding: "0 6vw clamp(28px, 6svh, 64px)", display: "flex", flexWrap: "wrap", alignItems: "flex-end", justifyContent: "space-between", gap: "clamp(24px, 4vw, 64px)", ...storyStatic }}>
-                    <div style={{ display: "flex", flexDirection: "column", gap: "clamp(10px, 1.2vw, 16px)", maxWidth: 560, flex: "1 1 320px" }}>
-                        <h1 style={{ margin: 0, fontSize: "clamp(34px, 4.6vw, 72px)", lineHeight: 1, fontWeight: 300, letterSpacing: "-0.03em", fontVariationSettings: "'opsz' 96" }}>{title}</h1>
-                        <p style={{ margin: 0, fontSize: "clamp(15px, 1.2vw, 18px)", lineHeight: 1.5, color: "rgba(244,242,236,0.78)" }}>{sub}</p>
-                        <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: "12px 26px", marginTop: 8 }}>
-                            <button type="button" className="mh-cta" onClick={() => scrollTo("shop")} style={{ fontFamily: FONT, fontSize: 12, fontWeight: 500, letterSpacing: "0.2em", textTransform: "uppercase", color: CREAM, background: "rgba(0,0,0,0.2)", border: "1px solid rgba(244,242,236,0.75)", borderRadius: 999, padding: "0 28px", minHeight: 48, cursor: "pointer", transition: "background 300ms ease, color 300ms ease", backdropFilter: "blur(6px)", WebkitBackdropFilter: "blur(6px)" }}>{cta}</button>
-                            <button type="button" className="mh-link" onClick={() => scrollTo("bespoke")} style={{ fontFamily: FONT, fontSize: 12, fontWeight: 500, letterSpacing: "0.2em", textTransform: "uppercase", color: CREAM, background: "none", border: 0, padding: 0, minHeight: 44, cursor: "pointer" }}>
+                <div ref={shade} aria-hidden="true" style={{ position: "absolute", inset: 0, background: "linear-gradient(0deg, rgba(0,0,0,0.62) 0%, rgba(0,0,0,0.18) 22%, rgba(0,0,0,0) 36%), linear-gradient(180deg, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0) 18%)", opacity: showStory ? 1 : 0, pointerEvents: "none", zIndex: 1 }} />
+                <div ref={story} style={{ position: "absolute", left: 0, right: 0, bottom: 0, zIndex: 3, padding: "0 5vw clamp(24px, 4.5svh, 48px)", display: "flex", flexWrap: "wrap", alignItems: "flex-end", justifyContent: "space-between", gap: "clamp(24px, 4vw, 64px)", ...storyStatic }}>
+                    <div style={{ display: "flex", flexDirection: "column", gap: "clamp(8px, 0.9vw, 12px)", maxWidth: 520, flex: "1 1 300px", textShadow: "0 1px 14px rgba(0,0,0,0.45)" }}>
+                        <span style={{ fontSize: 11, fontWeight: 500, letterSpacing: "0.32em", textTransform: "uppercase", color: CHAMPAGNE }}>{eyebrow}</span>
+                        {title ? <h1 style={{ margin: 0, fontSize: "clamp(34px, 4.6vw, 72px)", lineHeight: 1, fontWeight: 300, letterSpacing: "-0.03em", fontVariationSettings: "'opsz' 96" }}>{title}</h1> : null}
+                        <h1 style={{ margin: 0, fontSize: "clamp(18px, 1.6vw, 24px)", lineHeight: 1.35, fontWeight: 400, letterSpacing: "-0.01em", color: CREAM }}>{sub}</h1>
+                        <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: "12px 26px", marginTop: 4 }}>
+                            <button type="button" className="mh-cta" onClick={() => scrollTo("shop")} style={{ fontFamily: FONT, fontSize: 11, fontWeight: 500, letterSpacing: "0.2em", textTransform: "uppercase", color: CREAM, background: "rgba(0,0,0,0.2)", border: "1px solid rgba(244,242,236,0.75)", borderRadius: 999, padding: "0 22px", minHeight: 42, cursor: "pointer", transition: "background 300ms ease, color 300ms ease", backdropFilter: "blur(6px)", WebkitBackdropFilter: "blur(6px)" }}>{cta}</button>
+                            <button type="button" className="mh-link" onClick={() => scrollTo("bespoke")} style={{ fontFamily: FONT, fontSize: 11, fontWeight: 500, letterSpacing: "0.2em", textTransform: "uppercase", color: CREAM, background: "none", border: 0, padding: 0, minHeight: 44, cursor: "pointer" }}>
                                 <span style={{ borderBottom: "1px solid rgba(244,242,236,0.45)", paddingBottom: 4, transition: "border-color 200ms ease" }}>{link}</span>
                             </button>
                         </div>
                     </div>
-                    <ol aria-label="The making of the piece" style={{ listStyle: "none", margin: 0, padding: 0, display: "grid", gridTemplateColumns: "repeat(4, minmax(0, 1fr))", gap: "clamp(10px, 1.6vw, 22px)", flex: "1 1 300px", maxWidth: 520 }}>
+                    <ol aria-label="The making of the piece" style={{ textShadow: "0 1px 12px rgba(0,0,0,0.45)", listStyle: "none", margin: 0, padding: 0, display: "grid", gridTemplateColumns: "repeat(4, minmax(0, 1fr))", gap: "clamp(10px, 1.6vw, 22px)", flex: "1 1 300px", maxWidth: 520 }}>
                         {CHAPTERS.map((c, i) => {
                             const on = i === chap
                             return (
@@ -248,8 +249,8 @@ addPropertyControls(JewelryHero, {
     word: { type: ControlType.String, title: "Word", defaultValue: "JEWELRY" },
     eyebrow: { type: ControlType.String, title: "Eyebrow", defaultValue: "Fine jewelry · Bespoke" },
     line: { type: ControlType.String, title: "Opening line", displayTextArea: true, defaultValue: "Every link set with diamonds. Every commission made by hand." },
-    title: { type: ControlType.String, title: "Title", defaultValue: "The Infinity Cuban" },
-    sub: { type: ControlType.String, title: "Subtitle", defaultValue: "From the first sketch to the final stone." },
+    title: { type: ControlType.String, title: "Large title (optional)", defaultValue: "" },
+    sub: { type: ControlType.String, title: "Headline", defaultValue: "Drawn by hand, set stone by stone." },
     cta: { type: ControlType.String, title: "Button", defaultValue: "Discover the collection" },
     link: { type: ControlType.String, title: "Link", defaultValue: "Begin a commission" },
     intro: { type: ControlType.Boolean, title: "Word intro", defaultValue: false },
