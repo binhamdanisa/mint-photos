@@ -18,7 +18,7 @@ type Row = { name: string; what: string; from: string; time: string }
 const parseRows = (s: string): Row[] =>
     (s || "").split("\n").map((l) => l.split("|").map((x) => x.trim())).filter((p) => p[0]).map((p) => ({ name: p[0], what: p[1] || "", from: p[2] || "", time: p[3] || "" }))
 const parsePairs = (s: string) => (s || "").split("\n").map((l) => l.split("|").map((x) => x.trim())).filter((p) => p[0]).map((p) => ({ notice: p[0], service: p[1] || "" }))
-const KEYS = ["Water", "Cleaning", "Authentication", "Refurbishment", "Movement", "Restoration"]
+const KEYS = ["Water", "Cleaning", "Authentication", "Refurbishment", "Polishing", "Refinishing", "Movement", "Restoration"]
 const matches = (rowName: string, rec: string) => KEYS.some((k) => rec.includes(k) && rowName.includes(k))
 
 interface Props {
