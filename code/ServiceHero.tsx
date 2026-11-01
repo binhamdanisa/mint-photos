@@ -58,8 +58,9 @@ const CSS = `
 .sv-shade{background:linear-gradient(90deg,rgba(0,0,0,.88) 0%,rgba(0,0,0,.66) 30%,rgba(0,0,0,.14) 60%,rgba(0,0,0,0) 100%),linear-gradient(0deg,rgba(0,0,0,.6) 0%,rgba(0,0,0,0) 42%)}
 .sv-copy{position:absolute;left:5vw;bottom:clamp(40px,9svh,96px);width:min(440px,90vw)}
 .sv-card{box-sizing:border-box;width:auto;max-width:min(420px,90vw);padding:16px 20px 16px;border-radius:20px;gap:10px!important;
- background:rgba(255,255,255,.14);-webkit-backdrop-filter:blur(24px) saturate(160%);backdrop-filter:blur(24px) saturate(160%);
- border:1px solid rgba(255,255,255,.26);box-shadow:0 18px 40px -24px rgba(0,0,0,.55),inset 0 1px 0 rgba(255,255,255,.18)}
+ background:rgba(255,255,255,.14);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);
+ border:1px solid rgba(255,255,255,.5);box-shadow:0 18px 40px -28px rgba(0,0,0,.28),inset 0 1px 0 rgba(255,255,255,.35)}
+@media (min-width:810px){.sv-mid{top:50%;bottom:auto;transform:translateY(-50%)}}
 
 .sv-marks li{height:52px}
 .sv-card .sv-marksblk{padding-top:10px!important;border-top:1px solid var(--sv-rule);gap:8px!important}
@@ -86,7 +87,7 @@ const CSS = `
  .sv-card{--svlogo:.7}
 }
 .sv-light .sv-shade{background:linear-gradient(0deg,var(--sv-bg) 0%,rgba(237,228,221,.75) 14%,rgba(237,228,221,0) 30%)}
-@media (max-width:809px){.sv-light .sv-shade{background:linear-gradient(0deg,var(--sv-bg) 0%,rgba(237,228,221,.9) 26%,rgba(237,228,221,0) 50%)}}
+@media (max-width:809px){.sv-light .sv-shade{background:linear-gradient(0deg,rgba(237,228,221,.55) 0%,rgba(237,228,221,0) 30%)}}
 .sv-light .sv-loupe{box-shadow:0 0 0 1.5px rgba(29,29,31,.75),0 0 0 7px rgba(255,255,255,.55),0 0 0 8px rgba(29,29,31,.25),0 24px 60px -12px rgba(0,0,0,.45),inset 0 0 26px rgba(0,0,0,.18)}
 `
 
@@ -271,7 +272,7 @@ export default function ServiceHero(props: Props) {
             <div className="sv-shade" aria-hidden="true" style={{ position: "absolute", inset: 0, pointerEvents: "none" }} />
             <div className="sv-hit" aria-hidden="true" />
 
-            <div className={card ? "sv-copy sv-card" : "sv-copy"} style={{ display: "flex", flexDirection: "column", gap: 12, zIndex: 2 }}>
+            <div className={"sv-copy" + (card ? " sv-card" : "") + (split ? " sv-mid" : "")} style={{ display: "flex", flexDirection: "column", gap: 12, zIndex: 2 }}>
                 {showText ? (
                     <>
                         <span className={inCls} style={{ ...anim(150), display: "inline-flex", alignItems: "center", gap: 12, fontSize: 10, fontWeight: 600, letterSpacing: "0.3em", textTransform: "uppercase", color: BRASS }}>
