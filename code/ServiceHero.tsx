@@ -22,6 +22,7 @@ interface Props {
     focusY: number
     light: boolean
     split: boolean
+    card: boolean
     splitAt: number
     bg: string
     zoom: number
@@ -56,6 +57,17 @@ const CSS = `
 .sv-act:focus-visible{outline:1px solid ${BRASS};outline-offset:4px}
 .sv-shade{background:linear-gradient(90deg,rgba(0,0,0,.88) 0%,rgba(0,0,0,.66) 30%,rgba(0,0,0,.14) 60%,rgba(0,0,0,0) 100%),linear-gradient(0deg,rgba(0,0,0,.6) 0%,rgba(0,0,0,0) 42%)}
 .sv-copy{position:absolute;left:5vw;bottom:clamp(40px,9svh,96px);width:min(440px,90vw)}
+.sv-card{box-sizing:border-box;width:min(476px,90vw);padding:24px 26px 22px;border-radius:22px;
+ background:linear-gradient(160deg,rgba(255,255,255,.52),rgba(255,255,255,.30));
+ -webkit-backdrop-filter:blur(22px) saturate(150%);backdrop-filter:blur(22px) saturate(150%);
+ border:1px solid rgba(255,255,255,.7);
+ box-shadow:0 1px 0 rgba(255,255,255,.8) inset,0 0 0 1px rgba(29,29,31,.04),0 30px 60px -30px rgba(60,40,20,.35),0 8px 18px -12px rgba(60,40,20,.2)}
+.sv-root:not(.sv-light) .sv-card{background:linear-gradient(160deg,rgba(30,30,30,.48),rgba(10,10,10,.34));border-color:rgba(255,255,255,.14);box-shadow:0 1px 0 rgba(255,255,255,.08) inset,0 30px 60px -30px rgba(0,0,0,.7)}
+.sv-screw{position:absolute;width:9px;height:9px;border-radius:50%;
+ background:radial-gradient(circle at 35% 30%,#fbf6ea 0%,#d9c9a6 38%,#9c8a63 72%,#6f6044 100%);
+ box-shadow:0 0 0 1px rgba(60,45,20,.35),0 1px 1.5px rgba(0,0,0,.25),inset 0 -1px 1px rgba(0,0,0,.18)}
+.sv-screw i{position:absolute;left:1.5px;right:1.5px;top:50%;height:1.4px;margin-top:-.7px;border-radius:1px;background:rgba(60,45,20,.75);box-shadow:0 .5px 0 rgba(255,255,255,.45)}
+.sv-s0{left:10px;top:10px}.sv-s1{right:10px;top:10px}.sv-s2{left:10px;bottom:10px}.sv-s3{right:10px;bottom:10px}
 .sv-marks li{height:52px}
 .sv-loupe{position:absolute;left:0;top:0;border-radius:50%;pointer-events:none;background-repeat:no-repeat;will-change:transform,background-position;
  box-shadow:0 0 0 1.5px rgba(244,242,236,.85),0 0 0 7px rgba(10,10,10,.55),0 0 0 8px rgba(212,178,120,.55),0 24px 60px -10px rgba(0,0,0,.8),inset 0 0 30px rgba(0,0,0,.45)}
@@ -68,6 +80,7 @@ const CSS = `
 @media (max-width:809px){
  .sv-shade{background:linear-gradient(0deg,rgba(0,0,0,.94) 0%,rgba(0,0,0,.74) 40%,rgba(0,0,0,.08) 68%,rgba(0,0,0,.3) 100%)}
  .sv-copy{left:20px;right:20px;width:auto;bottom:calc(env(safe-area-inset-bottom,0px) + 32px)}
+ .sv-card{left:12px;right:12px;width:auto;padding:24px 22px 28px;bottom:calc(env(safe-area-inset-bottom,0px) + 20px)}
  .sv-marks li{height:44px;padding-left:16px!important;padding-right:16px!important}
  .sv-marks li:first-child{padding-left:0!important}
  .sv-marks img{transform:scale(.86);transform-origin:left center}
@@ -92,6 +105,7 @@ export default function ServiceHero(props: Props) {
         focusY = 50,
         light = false,
         split = false,
+        card = true,
         splitAt = 64,
         bg = "#ede4dd",
         zoom = 2.4,
@@ -257,7 +271,11 @@ export default function ServiceHero(props: Props) {
             <div className="sv-shade" aria-hidden="true" style={{ position: "absolute", inset: 0, pointerEvents: "none" }} />
             <div className="sv-hit" aria-hidden="true" />
 
-            <div className="sv-copy" style={{ display: "flex", flexDirection: "column", gap: 12, zIndex: 2 }}>
+            <div className={card ? "sv-copy sv-card" : "sv-copy"} style={{ display: "flex", flexDirection: "column", gap: 12, zIndex: 2 }}>
+                {card ? [18, -34, 71, 142].map((a, i) => (
+                    // Slotted screws in the corners, the way a bridge is held to a movement plate. Each sits at its own angle.
+                    <span key={i} aria-hidden="true" className={"sv-screw sv-s" + i}><i style={{ transform: `rotate(${a}deg)` }} /></span>
+                )) : null}
                 {showText ? (
                     <>
                         <span className={inCls} style={{ ...anim(150), display: "inline-flex", alignItems: "center", gap: 12, fontSize: 10, fontWeight: 600, letterSpacing: "0.3em", textTransform: "uppercase", color: BRASS }}>
@@ -297,6 +315,7 @@ addPropertyControls(ServiceHero, {
     focus: { type: ControlType.Number, title: "Focus X", min: 0, max: 100, step: 1, unit: "%", defaultValue: 50 },
     focusY: { type: ControlType.Number, title: "Focus Y", min: 0, max: 100, step: 1, unit: "%", defaultValue: 50 },
     light: { type: ControlType.Boolean, title: "Light photo", defaultValue: false },
+    card: { type: ControlType.Boolean, title: "Frosted card", defaultValue: true },
     split: { type: ControlType.Boolean, title: "Desktop split", defaultValue: false },
     splitAt: { type: ControlType.Number, title: "Photo center", min: 40, max: 80, step: 1, unit: "%", defaultValue: 64 },
     bg: { type: ControlType.Color, title: "Background", defaultValue: "#ede4dd" },
