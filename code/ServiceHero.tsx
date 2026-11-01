@@ -133,6 +133,23 @@ export default function ServiceHero(props: Props) {
     const canvas = RenderTarget.current() === RenderTarget.canvas
     const still = reduce || canvas
     const big = loupeImage || photo
+    // The large loupe photo waits until the page has appeared; until then the loupe uses the photo already on screen.
+    const [bigReady, setBigReady] = useState(false)
+    useEffect(() => {
+        if (typeof window === "undefined" || !loupeImage || loupeImage === photo) return
+        let done = false
+        const go = () => {
+            if (done) return
+            done = true
+            const im = new Image()
+            im.onload = () => setBigReady(true)
+            im.src = loupeImage
+        }
+        const later = () => { const ric = (window as any).requestIdleCallback; ric ? ric(go, { timeout: 2500 }) : setTimeout(go, 1200) }
+        if (document.readyState === "complete") later()
+        else window.addEventListener("load", later, { once: true })
+        return () => { done = true; window.removeEventListener("load", later) }
+    }, [loupeImage, photo])
 
     useEffect(() => {
         if (typeof window === "undefined" || !window.matchMedia) return
@@ -264,7 +281,7 @@ export default function ServiceHero(props: Props) {
                         <img src={photo} alt="A Swiss automatic watch movement up close: jewels, bridges, balance and rotor" className={still ? "" : "sv-photo"} fetchPriority="high" decoding="async" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: `var(--svfx,50%) var(--svfy,50%)` }} />
                         <style>{`.sv-stage img{--svfx:${focus}%;--svfy:${focusY}%}@media (max-width:809px){.sv-stage img{--svfx:${focusPhone}%;--svfy:50%}}`}</style>
                         <div ref={wrap} className="sv-loupe-wrap" aria-hidden="true">
-                            <div ref={lens} className={"sv-loupe" + (still ? "" : " sv-loupe-in")} style={{ backgroundImage: `url("${big}")` }} />
+                            <div ref={lens} className={"sv-loupe" + (still ? "" : " sv-loupe-in")} style={{ backgroundImage: `url("${bigReady ? big : photo}")` }} />
                         </div>
                     </>
                 ) : null}
