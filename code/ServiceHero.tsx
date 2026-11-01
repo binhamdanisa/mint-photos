@@ -58,11 +58,8 @@ const CSS = `
 .sv-shade{background:linear-gradient(90deg,rgba(0,0,0,.88) 0%,rgba(0,0,0,.66) 30%,rgba(0,0,0,.14) 60%,rgba(0,0,0,0) 100%),linear-gradient(0deg,rgba(0,0,0,.6) 0%,rgba(0,0,0,0) 42%)}
 .sv-copy{position:absolute;left:5vw;bottom:clamp(40px,9svh,96px);width:min(440px,90vw)}
 .sv-card{box-sizing:border-box;width:min(476px,90vw);padding:24px 26px 22px;border-radius:22px;
- background:linear-gradient(160deg,rgba(255,255,255,.52),rgba(255,255,255,.30));
- -webkit-backdrop-filter:blur(22px) saturate(150%);backdrop-filter:blur(22px) saturate(150%);
- border:1px solid rgba(255,255,255,.7);
- box-shadow:0 1px 0 rgba(255,255,255,.8) inset,0 0 0 1px rgba(29,29,31,.04),0 30px 60px -30px rgba(60,40,20,.35),0 8px 18px -12px rgba(60,40,20,.2)}
-.sv-root:not(.sv-light) .sv-card{background:linear-gradient(160deg,rgba(30,30,30,.48),rgba(10,10,10,.34));border-color:rgba(255,255,255,.14);box-shadow:0 1px 0 rgba(255,255,255,.08) inset,0 30px 60px -30px rgba(0,0,0,.7)}
+ background:rgba(255,255,255,.14);-webkit-backdrop-filter:blur(24px) saturate(160%);backdrop-filter:blur(24px) saturate(160%);
+ border:1px solid rgba(255,255,255,.26);box-shadow:0 18px 40px -24px rgba(0,0,0,.55),inset 0 1px 0 rgba(255,255,255,.18)}
 .sv-screw{position:absolute;width:9px;height:9px;border-radius:50%;
  background:radial-gradient(circle at 35% 30%,#fbf6ea 0%,#d9c9a6 38%,#9c8a63 72%,#6f6044 100%);
  box-shadow:0 0 0 1px rgba(60,45,20,.35),0 1px 1.5px rgba(0,0,0,.25),inset 0 -1px 1px rgba(0,0,0,.18)}
