@@ -19,6 +19,11 @@ interface Props {
     natH: number
     focus: number
     focusPhone: number
+    focusY: number
+    light: boolean
+    split: boolean
+    splitAt: number
+    bg: string
     zoom: number
     startX: number
     startY: number
@@ -45,7 +50,9 @@ const CSS = `
 .sv-in{opacity:0;animation:svUp 1.2s cubic-bezier(.22,1,.36,1) forwards}
 .sv-arrow{display:inline-flex;align-items:center;gap:8px;transition:gap 250ms ease}
 .sv-act:hover .sv-arrow{gap:12px}
-.sv-act2:hover{color:#f4f2ec!important}
+.sv-act2:hover{color:var(--sv-ink)!important}
+.sv-root{--sv-ink:#f4f2ec;--sv-ink2:rgba(244,242,236,.78);--sv-ink3:rgba(244,242,236,.62);--sv-rule:rgba(244,242,236,.16)}
+.sv-light{--sv-ink:rgb(29,29,31);--sv-ink2:rgba(29,29,31,.72);--sv-ink3:rgba(29,29,31,.62);--sv-rule:rgba(29,29,31,.14)}
 .sv-act:focus-visible{outline:1px solid ${BRASS};outline-offset:4px}
 .sv-shade{background:linear-gradient(90deg,rgba(0,0,0,.88) 0%,rgba(0,0,0,.66) 30%,rgba(0,0,0,.14) 60%,rgba(0,0,0,0) 100%),linear-gradient(0deg,rgba(0,0,0,.6) 0%,rgba(0,0,0,0) 42%)}
 .sv-copy{position:absolute;left:5vw;bottom:clamp(40px,9svh,96px);width:min(440px,90vw)}
@@ -65,6 +72,9 @@ const CSS = `
  .sv-marks li:first-child{padding-left:0!important}
  .sv-marks img{transform:scale(.86);transform-origin:left center}
 }
+.sv-light .sv-shade{background:linear-gradient(0deg,var(--sv-bg) 0%,rgba(237,228,221,.75) 14%,rgba(237,228,221,0) 30%)}
+@media (max-width:809px){.sv-light .sv-shade{background:linear-gradient(0deg,var(--sv-bg) 0%,rgba(237,228,221,.9) 26%,rgba(237,228,221,0) 50%)}}
+.sv-light .sv-loupe{box-shadow:0 0 0 1.5px rgba(29,29,31,.75),0 0 0 7px rgba(255,255,255,.55),0 0 0 8px rgba(29,29,31,.25),0 24px 60px -12px rgba(0,0,0,.45),inset 0 0 26px rgba(0,0,0,.18)}
 `
 
 /**
@@ -79,6 +89,11 @@ export default function ServiceHero(props: Props) {
         natH = 3985,
         focus = 50,
         focusPhone = 58,
+        focusY = 50,
+        light = false,
+        split = false,
+        splitAt = 64,
+        bg = "#ede4dd",
         zoom = 2.4,
         startX = 66,
         startY = 31,
@@ -124,7 +139,21 @@ export default function ServiceHero(props: Props) {
             W = r.width; H = r.height; phone = W < 810
             const fx = (phone ? focusPhone : focus) / 100
             const s = Math.max(W / natW, H / natH)
-            dw = natW * s; dh = natH * s; ox = (W - dw) * fx; oy = (H - dh) * 0.5
+            dw = natW * s; dh = natH * s; ox = (W - dw) * fx; oy = (H - dh) * (phone ? 0.5 : focusY / 100)
+            const im = st.querySelector("img") as HTMLImageElement | null
+            if (im) {
+                if (split && !phone) {
+                    // Whole photo at full height on the right; its left edge melts into the matching background.
+                    const k = H / natH
+                    dw = natW * k; dh = H; ox = W < 1200 ? W - dw : Math.min(W - dw, W * (splitAt / 100) - dw / 2); oy = 0
+                    im.style.left = ox + "px"; im.style.width = dw + "px"; im.style.right = "auto"
+                    const m = "linear-gradient(90deg, transparent 0, #000 16%, #000 86%, transparent 100%)"
+                    im.style.webkitMaskImage = m; im.style.maskImage = m
+                } else {
+                    im.style.left = "0px"; im.style.width = "100%"; im.style.right = ""
+                    im.style.webkitMaskImage = ""; im.style.maskImage = ""
+                }
+            }
             R = Math.round(Math.max(64, Math.min(130, Math.min(W, H) * (phone ? 0.2 : 0.14))))
             ln.style.width = ln.style.height = R * 2 + "px"
             ln.style.backgroundSize = `${dw * zoom}px ${dh * zoom}px`
@@ -196,7 +225,7 @@ export default function ServiceHero(props: Props) {
             window.removeEventListener("scroll", onScroll)
             if (hit) { hit.removeEventListener("pointermove", move); hit.removeEventListener("pointerleave", leave); hit.removeEventListener("pointerdown", pdown); hit.removeEventListener("pointerup", pup); hit.removeEventListener("pointercancel", cancel) }
         }
-    }, [photo, big, still, natW, natH, focus, focusPhone, zoom, startX, startY])
+    }, [photo, big, still, natW, natH, focus, focusPhone, focusY, zoom, startX, startY, split, splitAt])
 
     const toTrack = () => {
         if (typeof document === "undefined") return
@@ -212,13 +241,13 @@ export default function ServiceHero(props: Props) {
     ]
 
     return (
-        <section ref={root} style={{ position: "relative", width: "100%", height: "100svh", minHeight: 600, maxHeight: 1100, background: "#000", color: CREAM, fontFamily: FONT, overflow: "hidden", ...style }}>
+        <section ref={root} style={{ position: "relative", width: "100%", height: "100svh", minHeight: 600, maxHeight: 1100, background: light ? bg : "#000", color: "var(--sv-ink)", fontFamily: FONT, overflow: "hidden", ["--sv-bg" as any]: bg, ...style }} className={light ? "sv-root sv-light" : "sv-root"}>
             <style>{CSS}</style>
             <div ref={stage} className="sv-stage">
                 {photo ? (
                     <>
-                        <img src={photo} alt="A Swiss automatic watch movement up close: jewels, bridges, balance and rotor" className={still ? "" : "sv-photo"} fetchPriority="high" decoding="async" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: "var(--svfx,50%) 50%" }} />
-                        <style>{`.sv-stage img{--svfx:${focus}%}@media (max-width:809px){.sv-stage img{--svfx:${focusPhone}%}}`}</style>
+                        <img src={photo} alt="A Swiss automatic watch movement up close: jewels, bridges, balance and rotor" className={still ? "" : "sv-photo"} fetchPriority="high" decoding="async" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: `var(--svfx,50%) var(--svfy,50%)` }} />
+                        <style>{`.sv-stage img{--svfx:${focus}%;--svfy:${focusY}%}@media (max-width:809px){.sv-stage img{--svfx:${focusPhone}%;--svfy:50%}}`}</style>
                         <div ref={wrap} className="sv-loupe-wrap" aria-hidden="true">
                             <div ref={lens} className={"sv-loupe" + (still ? "" : " sv-loupe-in")} style={{ backgroundImage: `url("${big}")` }} />
                         </div>
@@ -235,25 +264,25 @@ export default function ServiceHero(props: Props) {
                             <span style={{ width: 26, height: 1, background: BRASS, opacity: 0.7 }} />{eyebrow}
                         </span>
                         <h1 className={inCls} style={{ ...anim(270), margin: 0, fontSize: "clamp(28px, 2.6vw, 38px)", lineHeight: 1.1, fontWeight: 400, letterSpacing: "-0.02em" }}>{title}</h1>
-                        <p className={inCls} style={{ ...anim(390), margin: 0, fontSize: "clamp(16px, 1.3vw, 19px)", lineHeight: 1.4, fontWeight: 400, color: "rgba(244,242,236,0.85)" }}>{line}</p>
+                        <p className={inCls} style={{ ...anim(390), margin: 0, fontSize: "clamp(16px, 1.3vw, 19px)", lineHeight: 1.4, fontWeight: 400, color: "var(--sv-ink2)" }}>{line}</p>
                     </>
                 ) : (
                     // Not shown, but kept for search engines and screen readers.
                     <h1 style={{ position: "absolute", width: 1, height: 1, padding: 0, margin: -1, overflow: "hidden", clip: "rect(0 0 0 0)", whiteSpace: "nowrap", border: 0 }}>{title}</h1>
                 )}
-                <div className={inCls} style={{ ...anim(showText ? 510 : 200), display: "flex", flexWrap: "wrap", alignItems: "center", gap: "8px 22px", marginTop: showText ? 4 : 0, paddingTop: showText ? 12 : 0, borderTop: showText ? "1px solid rgba(244,242,236,0.16)" : "none" }}>
-                    <a className="sv-act" href={ctaLink} style={{ fontSize: 11, fontWeight: 600, letterSpacing: "0.18em", textTransform: "uppercase", color: CREAM, textDecoration: "none", minHeight: 40, display: "inline-flex", alignItems: "center" }}><span className="sv-arrow">{cta}<span aria-hidden="true">→</span></span></a>
-                    <button type="button" className="sv-act sv-act2" onClick={toTrack} style={{ fontFamily: FONT, fontSize: 11, fontWeight: 600, letterSpacing: "0.18em", textTransform: "uppercase", color: "rgba(244,242,236,0.72)", background: "none", border: 0, padding: 0, minHeight: 40, cursor: "pointer", transition: "color 200ms ease" }}><span className="sv-arrow">{track}<span aria-hidden="true">→</span></span></button>
+                <div className={inCls} style={{ ...anim(showText ? 510 : 200), display: "flex", flexWrap: "wrap", alignItems: "center", gap: "8px 22px", marginTop: showText ? 4 : 0, paddingTop: showText ? 12 : 0, borderTop: showText ? "1px solid var(--sv-rule)" : "none" }}>
+                    <a className="sv-act" href={ctaLink} style={{ fontSize: 11, fontWeight: 600, letterSpacing: "0.18em", textTransform: "uppercase", color: "var(--sv-ink)", textDecoration: "none", minHeight: 40, display: "inline-flex", alignItems: "center" }}><span className="sv-arrow">{cta}<span aria-hidden="true">→</span></span></a>
+                    <button type="button" className="sv-act sv-act2" onClick={toTrack} style={{ fontFamily: FONT, fontSize: 11, fontWeight: 600, letterSpacing: "0.18em", textTransform: "uppercase", color: "var(--sv-ink2)", background: "none", border: 0, padding: 0, minHeight: 40, cursor: "pointer", transition: "color 200ms ease" }}><span className="sv-arrow">{track}<span aria-hidden="true">→</span></span></button>
                 </div>
                 <div className={inCls} style={{ ...anim(650), display: "flex", flexDirection: "column", gap: 10, paddingTop: 14 }}>
                     <ul className="sv-marks" aria-label="Certifications" style={{ listStyle: "none", margin: 0, padding: 0, display: "flex", flexWrap: "nowrap", alignItems: "center" }}>
                         {logos.map((l, i) => (
-                            <li key={l.alt} style={{ display: "flex", alignItems: "center", boxSizing: "border-box", padding: i === 0 ? "0 22px 0 0" : "0 22px", borderLeft: i === 0 ? "none" : "1px solid rgba(244,242,236,0.16)" }}>
+                            <li key={l.alt} style={{ display: "flex", alignItems: "center", boxSizing: "border-box", padding: i === 0 ? "0 22px 0 0" : "0 22px", borderLeft: i === 0 ? "none" : "1px solid var(--sv-rule)" }}>
                                 <img src={l.src} alt={l.alt} title={l.alt} loading="lazy" decoding="async" style={{ display: "block", height: l.h, width: "auto", opacity: 0.9 }} />
                             </li>
                         ))}
                     </ul>
-                    <p style={{ margin: 0, fontSize: 13, lineHeight: 1.55, color: "rgba(244,242,236,0.62)", maxWidth: 400 }}>{marksNote}</p>
+                    <p style={{ margin: 0, fontSize: 13, lineHeight: 1.55, color: "var(--sv-ink3)", maxWidth: 400 }}>{marksNote}</p>
                 </div>
             </div>
         </section>
@@ -266,6 +295,11 @@ addPropertyControls(ServiceHero, {
     natW: { type: ControlType.Number, title: "Photo width", min: 100, max: 20000, step: 1, defaultValue: 5690 },
     natH: { type: ControlType.Number, title: "Photo height", min: 100, max: 20000, step: 1, defaultValue: 3985 },
     focus: { type: ControlType.Number, title: "Focus X", min: 0, max: 100, step: 1, unit: "%", defaultValue: 50 },
+    focusY: { type: ControlType.Number, title: "Focus Y", min: 0, max: 100, step: 1, unit: "%", defaultValue: 50 },
+    light: { type: ControlType.Boolean, title: "Light photo", defaultValue: false },
+    split: { type: ControlType.Boolean, title: "Desktop split", defaultValue: false },
+    splitAt: { type: ControlType.Number, title: "Photo center", min: 40, max: 80, step: 1, unit: "%", defaultValue: 64 },
+    bg: { type: ControlType.Color, title: "Background", defaultValue: "#ede4dd" },
     focusPhone: { type: ControlType.Number, title: "Phone focus X", min: 0, max: 100, step: 1, unit: "%", defaultValue: 58 },
     zoom: { type: ControlType.Number, title: "Loupe zoom", min: 1.2, max: 5, step: 0.1, defaultValue: 2.4 },
     startX: { type: ControlType.Number, title: "Loupe start X", min: 0, max: 100, step: 1, unit: "%", defaultValue: 66 },
