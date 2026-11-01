@@ -45,7 +45,7 @@ const CSS = `
 .mh-act:hover .mh-arrow{gap:12px}
 @media (max-width:480px){.mh-act{letter-spacing:0.08em!important;font-size:10.5px!important;white-space:nowrap}.mh-acts{flex-wrap:nowrap!important;justify-content:space-between;column-gap:10px!important}}
 .mh-story{padding:0 5vw clamp(24px,4.5svh,48px)}
-@media (max-width:809px){.mh-story{padding:0 14px calc(env(safe-area-inset-bottom,0px) + 108px)}.mh-rail{display:none!important}}
+@media (max-width:809px){.mh-story{padding:0 14px calc(env(safe-area-inset-bottom,0px) + 28px);gap:10px!important}.mh-rail{flex:1 1 100%!important;max-width:none!important}.mh-story .mh-glass:first-child{flex:1 1 100%!important;max-width:none!important}}
 @media (max-width:900px){.mh-word{height:min(32svh,340px)}}
 @media (max-width:640px){.mh-word{height:min(40svh,330px)}}
 `
