@@ -9,16 +9,16 @@ const CREAM = "#f4f2ec"
 const INK = "rgb(29, 29, 31)"
 const FONT = "'Bricolage Grotesque', system-ui, sans-serif"
 
-type Key = "buy" | "sell" | "trade" | "service" | "insights"
+type Key = "buy" | "sell" | "trade" | "jewelry" | "service"
 const TABS: { key: Key; label: string; href: string }[] = [
     { key: "buy", label: "Buy", href: "/all-products" },
     { key: "sell", label: "Sell", href: "/sell" },
     { key: "trade", label: "Trade", href: "/trade" },
+    { key: "jewelry", label: "Jewelry", href: "/jewelry" },
     { key: "service", label: "Service", href: "/service" },
-    { key: "insights", label: "Insights", href: "/insights" },
 ]
 
-// Fine line marks drawn for Mint: a wristwatch, a hang tag, linked arrows, a watchmaker's screwdriver, an open journal.
+// Fine line marks drawn for Mint: a wristwatch, a hang tag, linked arrows, a cut diamond, a watchmaker's screwdriver.
 function Icon({ k, color }: { k: Key; color: string }) {
     const p = { fill: "none", stroke: color, strokeWidth: 1.35, strokeLinecap: "round" as const, strokeLinejoin: "round" as const }
     return (
@@ -55,6 +55,13 @@ function Icon({ k, color }: { k: Key; color: string }) {
                     <path d="M12 12.7v7.1" />
                     <path d="M11.3 19.8h1.4l-.7 1.6z" />
                 </g>
+            ) : k === "jewelry" ? (
+                <g {...p}>
+                    <path d="M7.4 4.6h9.2l3.6 4.6L12 20.4 3.8 9.2z" />
+                    <path d="M3.8 9.2h16.4" />
+                    <path d="M7.4 4.6 9.6 9.2 12 4.6l2.4 4.6 2.2-4.6" strokeOpacity="0.6" />
+                    <path d="M9.6 9.2 12 20.4l2.4-11.2" strokeOpacity="0.6" />
+                </g>
             ) : (
                 <g {...p}>
                     <path d="M12 6.4C9.8 4.9 6.8 4.5 3.6 4.9v13.2c3.2-.4 6.2 0 8.4 1.5 2.2-1.5 5.2-1.9 8.4-1.5V4.9c-3.2-.4-6.2 0-8.4 1.5z" />
@@ -71,7 +78,7 @@ function activeFor(path: string): Key {
     if (p.startsWith("/sell")) return "sell"
     if (p.startsWith("/trade")) return "trade"
     if (p.startsWith("/service")) return "service"
-    if (p.startsWith("/insights")) return "insights"
+    if (p.startsWith("/jewelry")) return "jewelry"
     return "buy"
 }
 
@@ -141,7 +148,7 @@ export default function LuxeDock(props: { style?: CSSProperties }) {
 .ld-tab:focus-visible{outline:1px solid #d4b278;outline-offset:2px}
 @media (prefers-reduced-motion:reduce){.ld-cap,.ld-tab,.ld-tab .ld-lab{transition:none}}
 `}</style>
-            <nav aria-label="Buy, sell, trade, service and insights" className={"ld-cap" + (tucked ? " tuck" : "")}>
+            <nav aria-label="Buy, sell, trade, jewelry and service" className={"ld-cap" + (tucked ? " tuck" : "")}>
                 {TABS.map((t) => {
                     const on = t.key === active
                     return (
