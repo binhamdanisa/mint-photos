@@ -168,7 +168,7 @@ export default function ServiceHero(props: Props) {
             // Park the loupe over the jewel named by startX/startY (percent of the photograph), kept on screen.
             let x = ox + dw * (startX / 100), y = oy + dh * (startY / 100)
             const pad = R + 16
-            x = Math.max(pad, Math.min(W - pad, x)); y = Math.max(pad + (phone ? 90 : 100), Math.min(H * (phone ? 0.5 : 0.8), y))
+            x = Math.max(pad, Math.min(W - pad, x)); y = Math.max(pad + (phone ? 90 : 100), Math.min(H * (phone ? 0.66 : 0.8), y))
             put(x, y)
         }
         // Screen point to stage point, undoing the scroll zoom (origin 50% 40%).
