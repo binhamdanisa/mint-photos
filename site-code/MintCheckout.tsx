@@ -291,12 +291,11 @@ const SAMPLE: Loaded = { ok: true, state: "open", kind: "instant", pieces: [{ sl
 export default function MintCheckout(props: { style?: CSSProperties; preview?: string }) {
     useFonts()
     // "Design preview" shows sample content for review in Framer; leave it on Off for the live page.
-    const livePreview = props.preview === "live"
-    const canvas = !livePreview && (RenderTarget.current() === RenderTarget.canvas || (!!props.preview && props.preview !== "off"))
+    const canvas = RenderTarget.current() === RenderTarget.canvas || (!!props.preview && props.preview !== "off")
     const phone = useIsPhone()
     const [data, setData] = useState<Loaded | null>(canvas ? (props.preview === "unavailable" ? { ok: true, state: "unavailable", title: "Rolex Submariner Date 126610LN" } : SAMPLE) : null)
     const [delivery, setDelivery] = useState<Delivery>(canvas ? "ca" : "")
-    const [method, setMethod] = useState<Method>(props.preview === "card" || livePreview ? "card" : props.preview === "wire" ? "wire" : "")
+    const [method, setMethod] = useState<Method>(props.preview === "card" ? "card" : props.preview === "wire" ? "wire" : "")
     const [name, setName] = useState("")
     const [email, setEmail] = useState("")
     const [phoneNo, setPhoneNo] = useState("")
@@ -320,8 +319,8 @@ export default function MintCheckout(props: { style?: CSSProperties; preview?: s
         if (canvas || typeof window === "undefined") return
         try { const m = document.createElement("meta"); m.name = "robots"; m.content = "noindex, nofollow"; document.head.appendChild(m) } catch (e) {}
         const p = new URLSearchParams(window.location.search)
-        q.current = { token: p.get("t") || "", items: p.get("items") || p.get("piece") || (livePreview ? "rolex-keyring-18k-gold-plated" : "") }
-        const d = p.get("delivery") || (livePreview ? "ca" : null)
+        q.current = { token: p.get("t") || "", items: p.get("items") || p.get("piece") }
+        const d = p.get("delivery")
         // Photos the product page or bag handed over (display only; prices always come from the server).
         let imgs: Record<string, string> = {}
         try { imgs = JSON.parse(window.sessionStorage.getItem("mint-checkout-images") || "{}") || {} } catch (e) {}
@@ -569,7 +568,7 @@ export default function MintCheckout(props: { style?: CSSProperties; preview?: s
     )
 }
 addPropertyControls(MintCheckout, {
-    preview: { type: ControlType.Enum, title: "Design preview", options: ["off", "open", "wire", "card", "unavailable", "live"], optionTitles: ["Off", "Open", "Bank wire chosen", "Card chosen", "No longer available", "Live Stripe test"], defaultValue: "off" },
+    preview: { type: ControlType.Enum, title: "Design preview", options: ["off", "open", "wire", "card", "unavailable"], optionTitles: ["Off", "Open", "Bank wire chosen", "Card chosen", "No longer available"], defaultValue: "off" },
 })
 
 // Design preview only: a still of the Stripe card fields in the same styling, so the canvas shows the finished look.
