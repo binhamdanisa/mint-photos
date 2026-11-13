@@ -117,16 +117,17 @@ async function api(body: any) {
 
 // ---------- shared chrome ----------
 function Header() {
+    const phone = useIsPhone()
     return (
         <div style={{ background: GREEN, color: PALE }}>
-            <div style={{ maxWidth: 1180, margin: "0 auto", padding: "18px 24px", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 16 }}>
+            <div style={{ maxWidth: 1180, margin: "0 auto", padding: phone ? "14px 18px" : "18px 24px", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 16 }}>
                 <a href={SITE} style={{ display: "flex", alignItems: "center", gap: 12, color: PALE, textDecoration: "none" }}>
                     <img src={LOGO} alt="" width={36} height={36} style={{ width: 36, height: 36, borderRadius: 10, display: "block" }} />
-                    <span style={{ fontSize: 12.5, fontWeight: 600, letterSpacing: "0.32em" }}>MINT TIMEPIECES</span>
+                    <span style={{ fontSize: phone ? 11.5 : 12.5, fontWeight: 600, letterSpacing: phone ? "0.24em" : "0.32em", whiteSpace: "nowrap" }}>MINT TIMEPIECES</span>
                 </a>
                 <span style={{ display: "inline-flex", alignItems: "center", gap: 8, fontSize: 12.5, color: "rgba(220,228,215,0.78)" }}>
                     <svg width="13" height="13" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="4.5" y="10.5" width="15" height="10" rx="2.5" stroke="currentColor" strokeWidth="1.7" /><path d="M8 10.5V8a4 4 0 0 1 8 0v2.5" stroke="currentColor" strokeWidth="1.7" /></svg>
-                    Secure checkout
+                    {phone ? null : "Secure checkout"}
                 </span>
             </div>
             <div style={{ height: 1, background: GOLD }} />
@@ -187,7 +188,7 @@ const Spinner = () => <span aria-hidden="true" style={{ width: 16, height: 16, b
 function NoLongerAvailable({ phone, title }: { phone: boolean; title?: string }) {
     return (
         <Message phone={phone} eyebrowText="No longer available" title={title ? `The ${title} is no longer available` : "This piece is no longer available"}
-            actions={<><a href="/sourcing" style={primaryBtn()}>Source a piece for me</a><a href="/shop" style={quietLink}>Explore the collection</a></>}>
+            actions={<><a href="/buy" style={primaryBtn()}>Source a piece for me</a><a href="/shop" style={quietLink}>Explore the collection</a></>}>
             This checkout has closed, either because the hold on the piece ended or because it has found a new owner. Nothing has been charged. Tell us the reference you have in mind and our specialists will find it for you, usually within days.
         </Message>
     )
@@ -246,20 +247,21 @@ function Option({ id, on, title, tag, sub, onPick, children }: { id: Method; on:
     )
 }
 
-const SAMPLE: Loaded = { ok: true, state: "open", kind: "instant", pieces: [{ slug: "sample", title: "Rolex Keyring 18K Gold Plated", brand: "Rolex", reference: "", price: 320, image: null }], delivery: "ca", cardReady: true, useTax: "" }
+const SAMPLE: Loaded = { ok: true, state: "open", kind: "instant", pieces: [{ slug: "sample", title: "Rolex Keyring 18K Gold Plated", brand: "Rolex", reference: "", price: 320, image: "https://framerusercontent.com/images/QaIeE49f1vPwbmqw0Cc9F1fjI.png" }], delivery: "ca", cardReady: true, useTax: "" }
 
 /**
  * The full checkout page. Place it alone on the /checkout page at full width.
  * @framerSupportedLayoutWidth fixed
  * @framerSupportedLayoutHeight auto
  */
-export default function MintCheckout(props: { style?: CSSProperties }) {
+export default function MintCheckout(props: { style?: CSSProperties; preview?: string }) {
     useFonts()
-    const canvas = RenderTarget.current() === RenderTarget.canvas
+    // "Design preview" shows sample content for review in Framer; leave it on Off for the live page.
+    const canvas = RenderTarget.current() === RenderTarget.canvas || (!!props.preview && props.preview !== "off")
     const phone = useIsPhone()
-    const [data, setData] = useState<Loaded | null>(canvas ? SAMPLE : null)
+    const [data, setData] = useState<Loaded | null>(canvas ? (props.preview === "unavailable" ? { ok: true, state: "unavailable", title: "Rolex Submariner Date 126610LN" } : SAMPLE) : null)
     const [delivery, setDelivery] = useState<Delivery>(canvas ? "ca" : "")
-    const [method, setMethod] = useState<Method>("")
+    const [method, setMethod] = useState<Method>(props.preview === "card" ? "card" : props.preview === "wire" ? "wire" : "")
     const [name, setName] = useState("")
     const [email, setEmail] = useState("")
     const [phoneNo, setPhoneNo] = useState("")
@@ -476,7 +478,7 @@ export default function MintCheckout(props: { style?: CSSProperties }) {
                     {payError || (busy ? "Please keep this page open." : method === "card" ? "Your card is charged only when you tap Pay." : method ? "Nothing is charged on this page." : "Choose a payment method to continue.")}
                 </div>
             </div>
-            <Trust />
+            <Trust kind={data.kind || "instant"} />
         </div>
     )
 
@@ -511,9 +513,11 @@ export default function MintCheckout(props: { style?: CSSProperties }) {
         </Shell>
     )
 }
-addPropertyControls(MintCheckout, {})
+addPropertyControls(MintCheckout, {
+    preview: { type: ControlType.Enum, title: "Design preview", options: ["off", "open", "wire", "card", "unavailable"], optionTitles: ["Off", "Open", "Bank wire chosen", "Card chosen", "No longer available"], defaultValue: "off" },
+})
 
-function Trust() {
+function Trust({ kind }: { kind: string }) {
     const item = (icon: ReactNode, title: string, text: ReactNode) => (
         <div style={{ display: "flex", gap: 12, alignItems: "flex-start" }}>
             <span style={{ width: 34, height: 34, borderRadius: 12, background: PALE, color: GREEN, display: "inline-flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>{icon}</span>
@@ -522,8 +526,8 @@ function Trust() {
     )
     return (
         <div style={{ ...panel, padding: 20, display: "grid", gap: 16, background: "rgba(255,255,255,0.6)", boxShadow: "none" }}>
-            {item(<svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3 5 6v5c0 4.5 3 8.2 7 10 4-1.8 7-5.5 7-10V6l-7-3Z" stroke="currentColor" strokeWidth="1.7" strokeLinejoin="round" /><path d="m9 12 2 2 4-4" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" /></svg>, "Authenticity guaranteed", "Every piece is guaranteed authentic. If a piece is ever shown not to be authentic, you receive a full refund.")}
-            {item(<svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="4" y="5" width="16" height="15" rx="3" stroke="currentColor" strokeWidth="1.7" /><path d="M8 3v4M16 3v4M4 10h16" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" /></svg>, "All sales final", "Every sale is final once paid, as set out in our Terms and Conditions.")}
+            {item(<svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3 5 6v5c0 4.5 3 8.2 7 10 4-1.8 7-5.5 7-10V6l-7-3Z" stroke="currentColor" strokeWidth="1.7" strokeLinejoin="round" /><path d="m9 12 2 2 4-4" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" /></svg>, "Authenticity guaranteed", "Every piece is examined before it is listed, and we stand behind its authenticity. If a piece is ever shown not to be authentic, you receive a full refund.")}
+            {item(<svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="4" y="5" width="16" height="15" rx="3" stroke="currentColor" strokeWidth="1.7" /><path d="M8 3v4M16 3v4M4 10h16" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" /></svg>, "All sales final", kind === "reservation" ? <>Watches and bespoke jewelry are final sale, as set out in our <a href="/terms" style={{ color: INK }}>Terms and Conditions</a>.</> : <>Accessories and select handbags may be returned within 48 hours of delivery; every other sale is final, as set out in our <a href="/terms" style={{ color: INK }}>Terms and Conditions</a>.</>)}
             {item(<svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="3.5" y="5.5" width="17" height="13" rx="3" stroke="currentColor" strokeWidth="1.7" /><path d="m4.5 7.5 7.5 5.5 7.5-5.5" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" /></svg>, "Here to help", <>Write to <a href="mailto:sales@mintimepieces.com" style={{ color: INK }}>sales@mintimepieces.com</a> or text <a href={SMS} style={{ color: INK, whiteSpace: "nowrap" }}>{TEXT_NUMBER}</a>.</>)}
         </div>
     )
