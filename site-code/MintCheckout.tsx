@@ -350,14 +350,21 @@ export default function MintCheckout(props: { style?: CSSProperties; preview?: s
                     fonts: [{ cssSrc: FONT_CSS }],
                     appearance: {
                         theme: "flat",
-                        variables: { fontFamily: FONT, fontSizeBase: "16px", colorPrimary: GREEN, colorText: INK, colorTextSecondary: "rgba(29,29,31,0.62)", colorBackground: "#ffffff", colorDanger: GOLD_TEXT, borderRadius: "14px", spacingUnit: "4px", focusBoxShadow: "0 0 0 4px rgba(30,58,42,0.10)", focusOutline: "none" },
+                        labels: "above",
+                        variables: { fontFamily: FONT, fontSizeBase: "16px", fontWeightNormal: "400", fontWeightMedium: "500", fontWeightBold: "600", colorPrimary: GREEN, colorText: INK, colorTextSecondary: "rgba(29,29,31,0.62)", colorTextPlaceholder: "rgba(29,29,31,0.34)", colorBackground: "#ffffff", colorDanger: GOLD_TEXT, colorIcon: GREEN, borderRadius: "16px", spacingUnit: "4px", gridRowSpacing: "16px", gridColumnSpacing: "12px", focusBoxShadow: "0 0 0 4px rgba(30,58,42,0.09)", focusOutline: "none" },
                         rules: {
-                            ".Input": { border: "1px solid " + SAGE, boxShadow: "none", padding: "14px" },
-                            ".Input:focus": { border: "1px solid " + GREEN },
-                            ".Label": { fontSize: "12.5px", fontWeight: "500", color: "rgba(29,29,31,0.62)" },
-                            ".Tab": { border: "1px solid " + SAGE, boxShadow: "none" },
-                            ".Tab--selected": { border: "1.5px solid " + GREEN, boxShadow: "none" },
-                            ".Error": { color: GOLD_TEXT },
+                            ".Input": { backgroundColor: "#ffffff", border: "1px solid " + LINE, boxShadow: "0 1px 2px rgba(29,29,31,0.03)", padding: "16px", transition: "border 180ms ease, box-shadow 180ms ease" },
+                            ".Input:hover": { border: "1px solid " + SAGE },
+                            ".Input:focus": { border: "1px solid " + GREEN, boxShadow: "0 0 0 4px rgba(30,58,42,0.09)" },
+                            ".Input--invalid": { border: "1px solid rgba(165,111,24,0.55)", boxShadow: "none", color: INK },
+                            ".Label": { fontSize: "13px", fontWeight: "500", color: "rgba(29,29,31,0.72)", marginBottom: "8px" },
+                            ".Tab": { backgroundColor: "#ffffff", border: "1px solid " + LINE, boxShadow: "0 1px 2px rgba(29,29,31,0.03)", padding: "14px 16px" },
+                            ".Tab:hover": { border: "1px solid " + SAGE, color: INK },
+                            ".Tab--selected, .Tab--selected:hover, .Tab--selected:focus": { border: "1.5px solid " + GREEN, backgroundColor: "#ffffff", color: GREEN, boxShadow: "0 10px 24px -18px rgba(30,58,42,0.6)" },
+                            ".TabIcon--selected": { fill: GREEN },
+                            ".TabLabel": { fontWeight: "600" },
+                            ".Error": { color: GOLD_TEXT, fontSize: "12.5px", marginTop: "6px" },
+                            ".Block": { backgroundColor: "#ffffff", border: "1px solid " + LINE, boxShadow: "none" },
                         },
                     },
                 })
@@ -499,8 +506,9 @@ export default function MintCheckout(props: { style?: CSSProperties; preview?: s
                     <Option phone={phone} id="card" on={method === "card"} onPick={pick} icon={<IconCard />} title="Card payment through Stripe" sub="Card, Apple Pay or Google Pay. Adds 2.9%" amount={money(t.card)}>
                         {cardOff ? <div style={{ ...body2, color: GOLD_TEXT }}>Card payment opens shortly. Please choose bank wire, or text us at {TEXT_NUMBER}.</div> : (
                             <div style={{ padding: phone ? 0 : 0 }}>
-                                {!elementReady ? <div style={{ height: 150, borderRadius: 16, background: `linear-gradient(90deg, ${FIELD} 0%, #fff 50%, ${FIELD} 100%)`, backgroundSize: "800px 100%", animation: "mintShimmer 1.4s linear infinite" }} /> : null}
+                                {canvas ? <CardPreview phone={phone} /> : !elementReady ? <div style={{ height: 196, borderRadius: 16, background: `linear-gradient(90deg, #EFEAE2 0%, #fff 50%, #EFEAE2 100%)`, backgroundSize: "800px 100%", animation: "mintShimmer 1.4s linear infinite" }} /> : null}
                                 <div ref={cardMount} />
+                                {!canvas && elementReady ? <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 14, fontSize: 12.5, color: SOFT }}><svg width="13" height="13" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="4.5" y="10.5" width="15" height="10" rx="2.5" stroke="currentColor" strokeWidth="1.8" /><path d="M8 10.5V8a4 4 0 0 1 8 0v2.5" stroke="currentColor" strokeWidth="1.8" /></svg>Card details are encrypted and handled by Stripe. Mint never sees your card number.</div> : null}
                                 {cardError ? <div role="alert" style={{ marginTop: 12, padding: "12px 14px", borderRadius: 14, background: "rgba(165,111,24,0.07)", border: "1px solid rgba(165,111,24,0.28)", fontSize: 13.5, lineHeight: 1.5, color: GOLD_TEXT }}>{cardError}</div> : null}
                             </div>
                         )}
@@ -560,6 +568,33 @@ export default function MintCheckout(props: { style?: CSSProperties; preview?: s
 addPropertyControls(MintCheckout, {
     preview: { type: ControlType.Enum, title: "Design preview", options: ["off", "open", "wire", "card", "unavailable"], optionTitles: ["Off", "Open", "Bank wire chosen", "Card chosen", "No longer available"], defaultValue: "off" },
 })
+
+// Design preview only: a still of the Stripe card fields in the same styling, so the canvas shows the finished look.
+function CardPreview({ phone }: { phone: boolean }) {
+    const box = (label: string, value: string, extra?: ReactNode): ReactNode => (
+        <div style={{ display: "flex", flexDirection: "column", gap: 8, minWidth: 0 }}>
+            <span style={{ fontSize: 13, fontWeight: 500, color: "rgba(29,29,31,0.72)" }}>{label}</span>
+            <span style={{ height: 52, padding: "0 16px", borderRadius: 16, background: "#fff", border: "1px solid " + LINE, boxShadow: "0 1px 2px rgba(29,29,31,0.03)", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8, fontSize: 16, color: "rgba(29,29,31,0.34)" }}>{value}{extra}</span>
+        </div>
+    )
+    const brands = <span style={{ display: "inline-flex", gap: 4 }}>{["#1A1F71", "#EB001B", "#2E77BC"].map((c) => <span key={c} style={{ width: 26, height: 17, borderRadius: 4, background: c, opacity: 0.85 }} />)}</span>
+    const tab = (label: string, on: boolean, icon: ReactNode) => <span style={{ flex: 1, display: "flex", flexDirection: "column", gap: 6, padding: "12px 14px", borderRadius: 16, background: "#fff", border: on ? "1.5px solid " + GREEN : "1px solid " + LINE, color: on ? GREEN : SOFT, fontSize: 14, fontWeight: 600, boxShadow: on ? "0 10px 24px -18px rgba(30,58,42,0.6)" : "none" }}>{icon}{label}</span>
+    return (
+        <div aria-hidden="true" style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+            <div style={{ display: "flex", gap: 10 }}>
+                {tab("Card", true, <IconCard />)}
+                {tab("Apple Pay", false, <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M16.4 12.6c0-2.3 1.9-3.4 2-3.5-1.1-1.6-2.8-1.8-3.4-1.8-1.4-.1-2.8.9-3.5.9-.7 0-1.8-.8-3-.8-1.5 0-3 .9-3.8 2.3-1.6 2.8-.4 7 1.2 9.3.8 1.1 1.7 2.4 2.9 2.3 1.2 0 1.6-.7 3-.7s1.8.7 3 .7c1.3 0 2.1-1.1 2.8-2.3.9-1.3 1.3-2.5 1.3-2.6-.1 0-2.5-.9-2.5-3.8ZM14.1 5.8c.6-.8 1.1-1.8 1-2.8-.9 0-2 .6-2.7 1.4-.6.7-1.1 1.7-1 2.7 1 .1 2-.5 2.7-1.3Z" /></svg>)}
+            </div>
+            {box("Card number", "1234 1234 1234 1234", brands)}
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>{box("Expiration date", "MM / YY")}{box("Security code", "CVC")}</div>
+            <div style={{ display: "grid", gridTemplateColumns: phone ? "1fr" : "1fr 1fr", gap: 12 }}>{box("Country", "United States")}{box("ZIP code", "90210")}</div>
+            <div style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 12.5, color: SOFT }}>
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none"><rect x="4.5" y="10.5" width="15" height="10" rx="2.5" stroke="currentColor" strokeWidth="1.8" /><path d="M8 10.5V8a4 4 0 0 1 8 0v2.5" stroke="currentColor" strokeWidth="1.8" /></svg>
+                Card details are encrypted and handled by Stripe. Mint never sees your card number.
+            </div>
+        </div>
+    )
+}
 
 function Trust({ kind, phone }: { kind: string; phone?: boolean }) {
     const item = (icon: ReactNode, title: string, text: ReactNode) => (
