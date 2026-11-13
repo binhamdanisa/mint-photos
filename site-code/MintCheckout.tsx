@@ -258,22 +258,23 @@ function Summary({ pieces, delivery, method, holdUntilLabel, useTax, compact = f
 const IconBank = () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M3.5 9.5 12 4l8.5 5.5" stroke="currentColor" strokeWidth="1.7" strokeLinejoin="round" /><path d="M5.5 10v7.5M9.8 10v7.5M14.2 10v7.5M18.5 10v7.5M3.5 20h17" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" /></svg>
 const IconCard = () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="3" y="5.5" width="18" height="13" rx="2.8" stroke="currentColor" strokeWidth="1.7" /><path d="M3 10h18M7 15h3.5" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" /></svg>
 const IconCoin = () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="8.5" stroke="currentColor" strokeWidth="1.7" /><path d="M10 8h3.2a2 2 0 0 1 0 4H10m0 0h3.6a2 2 0 0 1 0 4H10m0-8v8m1.5-9.5v1.5m0 8v1.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" /></svg>
-function Option({ id, on, title, tag, sub, amount, icon, onPick, children }: { id: Method; on: boolean; title: string; tag?: string; sub: string; amount: string; icon: ReactNode; onPick: (m: Method) => void; children?: ReactNode }) {
+function Option({ id, on, title, tag, sub, amount, icon, onPick, children, phone }: { phone?: boolean; id: Method; on: boolean; title: string; tag?: string; sub: string; amount: string; icon: ReactNode; onPick: (m: Method) => void; children?: ReactNode }) {
     return (
         <div style={{ borderRadius: 22, border: on ? "1.5px solid " + GREEN : "1px solid " + LINE, background: on ? TINT : "#fff", transition: "border-color 220ms ease, background 220ms ease, box-shadow 220ms ease", boxShadow: on ? "0 16px 34px -26px rgba(30,58,42,0.6)" : "0 1px 2px rgba(29,29,31,0.03)" }}>
-            <div role="radio" aria-checked={on} tabIndex={0} onClick={() => onPick(id)} onKeyDown={(e) => { if (e.key === " " || e.key === "Enter") { e.preventDefault(); onPick(id) } }} style={{ display: "flex", gap: 14, alignItems: "center", padding: "18px 18px", cursor: "pointer", borderRadius: 22 }}>
+            <div role="radio" aria-checked={on} tabIndex={0} onClick={() => onPick(id)} onKeyDown={(e) => { if (e.key === " " || e.key === "Enter") { e.preventDefault(); onPick(id) } }} style={{ display: "flex", gap: 14, alignItems: "center", padding: phone ? "16px" : "18px", cursor: "pointer", borderRadius: 22 }}>
                 <span style={{ width: 44, height: 44, borderRadius: 14, background: on ? GREEN : FIELD, color: on ? PALE : GREEN, display: "inline-flex", alignItems: "center", justifyContent: "center", flexShrink: 0, transition: "background 220ms ease, color 220ms ease" }}>{icon}</span>
                 <span style={{ display: "flex", flexDirection: "column", gap: 3, minWidth: 0, flex: 1 }}>
                     <span style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap", fontSize: 15.5, fontWeight: 600 }}>{title}{tag ? <span style={{ padding: "3px 8px", borderRadius: 999, background: "rgba(165,111,24,0.1)", color: GOLD, fontSize: 10, fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase" }}>{tag}</span> : null}</span>
                     <span style={{ fontSize: 13, lineHeight: 1.45, color: SOFT }}>{sub}</span>
+                    {phone ? <span style={{ fontSize: 14.5, fontWeight: 600, marginTop: 4, fontVariantNumeric: "tabular-nums", color: on ? GREEN : INK }}>{amount}</span> : null}
                 </span>
                 <span style={{ display: "flex", alignItems: "center", gap: 12, flexShrink: 0 }}>
-                    <span style={{ fontSize: 14.5, fontWeight: 600, fontVariantNumeric: "tabular-nums", color: on ? GREEN : "rgba(29,29,31,0.78)" }}>{amount}</span>
+                    {phone ? null : <span style={{ fontSize: 14.5, fontWeight: 600, fontVariantNumeric: "tabular-nums", color: on ? GREEN : "rgba(29,29,31,0.78)" }}>{amount}</span>}
                     <span aria-hidden="true" style={{ width: 22, height: 22, borderRadius: 99, border: on ? "6.5px solid " + GREEN : "1.5px solid rgba(29,29,31,0.22)", background: "#fff", transition: "border 200ms ease" }} />
                 </span>
             </div>
             <div style={{ display: "grid", gridTemplateRows: on && children ? "1fr" : "0fr", transition: "grid-template-rows 360ms cubic-bezier(.22,1,.36,1)" }}>
-                <div style={{ overflow: "hidden" }}>{on && children ? <div style={{ padding: "0 18px 18px 76px" }}>{children}</div> : null}</div>
+                <div style={{ overflow: "hidden" }}>{on && children ? <div style={{ padding: phone ? "0 16px 16px" : "0 18px 18px 76px" }}>{children}</div> : null}</div>
             </div>
         </div>
     )
@@ -450,12 +451,12 @@ export default function MintCheckout(props: { style?: CSSProperties; preview?: s
     const form = (
         <div style={{ ...card, padding: phone ? "6px 20px 26px" : "14px 44px 40px" }}>
             <Step n={1} first title="Delivery" hint="Sales tax follows where you take the piece." note={errors.delivery}>
-                <div role="radiogroup" aria-label="Where you take delivery" style={{ display: "grid", gridTemplateColumns: phone ? "1fr" : "repeat(3, minmax(0, 1fr))", gap: 8, padding: 6, borderRadius: 20, background: FIELD }}>
+                <div role="radiogroup" aria-label="Where you take delivery" style={{ display: "grid", gridTemplateColumns: "1fr", gap: 4, padding: 6, borderRadius: 20, background: FIELD }}>
                     {DELIVERIES.map((o) => {
                         const on = delivery === o.id
-                        return <button key={o.id} type="button" role="radio" aria-checked={on} onClick={() => { setDelivery(o.id); setErrors((e) => ({ ...e, delivery: "", address: "" })) }} style={{ textAlign: "left", padding: "13px 15px", borderRadius: 15, border: 0, background: on ? "#fff" : "transparent", color: INK, fontFamily: FONT, cursor: "pointer", transition: "background 220ms ease, box-shadow 220ms ease", boxShadow: on ? "0 1px 2px rgba(29,29,31,0.06), 0 8px 20px -12px rgba(30,58,42,0.35)" : "none", display: "flex", gap: 11, alignItems: "flex-start" }}>
-                            <span aria-hidden="true" style={{ marginTop: 2, width: 16, height: 16, borderRadius: 99, border: on ? "5px solid " + GREEN : "1.5px solid rgba(29,29,31,0.22)", background: "#fff", flexShrink: 0, transition: "border 200ms ease" }} />
-                            <span style={{ display: "flex", flexDirection: "column", gap: 3 }}>
+                        return <button key={o.id} type="button" role="radio" aria-checked={on} onClick={() => { setDelivery(o.id); setErrors((e) => ({ ...e, delivery: "", address: "" })) }} style={{ width: "100%", textAlign: "left", padding: "14px 16px", borderRadius: 15, border: 0, background: on ? "#fff" : "transparent", color: INK, fontFamily: FONT, cursor: "pointer", transition: "background 220ms ease, box-shadow 220ms ease", boxShadow: on ? "0 1px 2px rgba(29,29,31,0.06), 0 8px 20px -12px rgba(30,58,42,0.35)" : "none", display: "flex", gap: 11, alignItems: "flex-start" }}>
+                            <span aria-hidden="true" style={{ marginTop: phone ? 2 : 0, alignSelf: phone ? "flex-start" : "center", width: 16, height: 16, borderRadius: 99, border: on ? "5px solid " + GREEN : "1.5px solid rgba(29,29,31,0.22)", background: "#fff", flexShrink: 0, transition: "border 200ms ease" }} />
+                            <span style={{ display: "flex", flex: 1, flexDirection: phone ? "column" : "row", justifyContent: "space-between", alignItems: phone ? "flex-start" : "baseline", gap: phone ? 3 : 12 }}>
                                 <span style={{ fontSize: 14.5, fontWeight: 600 }}>{o.label}</span>
                                 <span style={{ fontSize: 12.5, lineHeight: 1.4, color: SOFT }}>{o.sub}</span>
                             </span>
@@ -492,10 +493,10 @@ export default function MintCheckout(props: { style?: CSSProperties; preview?: s
             ) : null}
             <Step n={needsAddress ? 4 : 3} title="Payment" hint="Choose how you would like to pay." note={errors.method}>
                 <div role="radiogroup" aria-label="How you would like to pay" style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-                    <Option id="wire" on={method === "wire"} onPick={pick} icon={<IconBank />} title="Bank wire" tag="Recommended" sub="Listed price, no surcharge" amount={money(t.wire)}>
+                    <Option phone={phone} id="wire" on={method === "wire"} onPick={pick} icon={<IconBank />} title="Bank wire" tag="Recommended" sub="Listed price, no surcharge" amount={money(t.wire)}>
                         <div style={body2}>{q.current.token ? "Reserve the piece and receive your invoice by email straight away. It stays held for you for 24 hours from when you opened this checkout." : "Reserve the piece and receive your invoice by email straight away. We hold it for you for 24 hours."} {WIRE_LINE}</div>
                     </Option>
-                    <Option id="card" on={method === "card"} onPick={pick} icon={<IconCard />} title="Card payment through Stripe" sub="Card, Apple Pay or Google Pay. Adds 2.9%" amount={money(t.card)}>
+                    <Option phone={phone} id="card" on={method === "card"} onPick={pick} icon={<IconCard />} title="Card payment through Stripe" sub="Card, Apple Pay or Google Pay. Adds 2.9%" amount={money(t.card)}>
                         {cardOff ? <div style={{ ...body2, color: GOLD_TEXT }}>Card payment opens shortly. Please choose bank wire, or text us at {TEXT_NUMBER}.</div> : (
                             <div style={{ padding: phone ? 0 : 0 }}>
                                 {!elementReady ? <div style={{ height: 150, borderRadius: 16, background: `linear-gradient(90deg, ${FIELD} 0%, #fff 50%, ${FIELD} 100%)`, backgroundSize: "800px 100%", animation: "mintShimmer 1.4s linear infinite" }} /> : null}
@@ -504,7 +505,7 @@ export default function MintCheckout(props: { style?: CSSProperties; preview?: s
                             </div>
                         )}
                     </Option>
-                    <Option id="crypto" on={method === "crypto"} onPick={pick} icon={<IconCoin />} title="Cryptocurrency" sub="In US dollars at the wire total" amount={money(t.wire)}>
+                    <Option phone={phone} id="crypto" on={method === "crypto"} onPick={pick} icon={<IconCoin />} title="Cryptocurrency" sub="In US dollars at the wire total" amount={money(t.wire)}>
                         <div style={body2}>{CRYPTO_LINE}</div>
                     </Option>
                 </div>
