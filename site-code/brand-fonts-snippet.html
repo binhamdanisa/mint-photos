@@ -2,7 +2,7 @@
 /* Mint brand type. Sackers Gothic is the main face: every title, heading, label, button, name and price, always
    set in lowercase so it shows as small capitals. EB Garamond is only for paragraphs of reading text.
    The vertical metrics are evened out (ascent 90%, descent 30%) so small capitals sit centered in pills and buttons. Anything the site styles as Syne becomes Sackers Gothic, anything styled as
-   Libre Caslon Text, Inter or Geist becomes EB Garamond (or Sackers when bold or large). */
+   Libre Caslon Text, Inter, Geist or Bricolage Grotesque becomes EB Garamond (or Sackers when bold or large). */
 @font-face{font-family:"Mint Sackers";src:url("https://cdn.jsdelivr.net/gh/binhamdanisa/mint-photos@cdc4b40/fonts/sackers-sc-light.woff") format("woff");font-weight:100 500;font-style:normal;font-display:swap;ascent-override:90%;descent-override:30%;line-gap-override:0%}
 @font-face{font-family:"Mint Sackers";src:url("https://cdn.jsdelivr.net/gh/binhamdanisa/mint-photos@cdc4b40/fonts/sackers-sc-heavy.woff") format("woff");font-weight:600 900;font-style:normal;font-display:swap;ascent-override:90%;descent-override:30%;line-gap-override:0%}
 @font-face{font-family:"Mint Garamond";src:url("https://cdn.jsdelivr.net/fontsource/fonts/eb-garamond@latest/latin-400-normal.woff2") format("woff2");font-weight:100 450;font-style:normal;font-display:swap}
@@ -30,7 +30,7 @@
         var el=list[j]; if(el.nodeType!==1||!el.firstChild||el.hasAttribute("data-mint-type"))continue;
         var cs=getComputedStyle(el), ff=cs.fontFamily||"";
         if(/^\s*["']?Syne/.test(ff)){ sans(el); continue; }
-        if(!/^\s*["']?(Libre Caslon|Mint Garamond|Inter|Geist)/.test(ff)){
+        if(!/^\s*["']?(Libre Caslon|Mint Garamond|Inter|Geist|Bricolage)/.test(ff)){
           if(/^\s*["']?Mint Sackers/.test(ff)) sans(el);
           continue;
         }
