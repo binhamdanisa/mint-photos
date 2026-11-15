@@ -1,0 +1,40 @@
+<style id="mint-brand-fonts">
+/* Mint brand type: Sackers Gothic (shown in place of Syne, always small caps) and EB Garamond (in place of Libre Caslon Text). */
+@font-face{font-family:"Syne";src:url("https://cdn.jsdelivr.net/gh/binhamdanisa/mint-photos@b618cdc/fonts/sackers-gothic-light.woff") format("woff");font-weight:100 500;font-style:normal;font-display:swap}
+@font-face{font-family:"Syne";src:url("https://cdn.jsdelivr.net/gh/binhamdanisa/mint-photos@b618cdc/fonts/sackers-gothic-heavy.woff") format("woff");font-weight:600 900;font-style:normal;font-display:swap}
+@font-face{font-family:"Syne Variable";src:url("https://cdn.jsdelivr.net/gh/binhamdanisa/mint-photos@b618cdc/fonts/sackers-gothic-light.woff") format("woff");font-weight:100 500;font-style:normal;font-display:swap}
+@font-face{font-family:"Syne Variable";src:url("https://cdn.jsdelivr.net/gh/binhamdanisa/mint-photos@b618cdc/fonts/sackers-gothic-heavy.woff") format("woff");font-weight:600 900;font-style:normal;font-display:swap}
+@font-face{font-family:"Libre Caslon Text";src:url("https://cdn.jsdelivr.net/fontsource/fonts/eb-garamond@latest/latin-400-normal.woff2") format("woff2");font-weight:100 450;font-style:normal;font-display:swap}
+@font-face{font-family:"Libre Caslon Text";src:url("https://cdn.jsdelivr.net/fontsource/fonts/eb-garamond@latest/latin-500-normal.woff2") format("woff2");font-weight:451 550;font-style:normal;font-display:swap}
+@font-face{font-family:"Libre Caslon Text";src:url("https://cdn.jsdelivr.net/fontsource/fonts/eb-garamond@latest/latin-600-normal.woff2") format("woff2");font-weight:551 900;font-style:normal;font-display:swap}
+@font-face{font-family:"Libre Caslon Text";src:url("https://cdn.jsdelivr.net/fontsource/fonts/eb-garamond@latest/latin-400-italic.woff2") format("woff2");font-weight:100 900;font-style:italic;font-display:swap}
+[style*="Syne"],[data-styles-preset="umXNQhy9r"],[data-styles-preset="PX7DEun1D"],[data-styles-preset="KpfcnG7CO"],[data-styles-preset="FxwKcXUM_"],[data-styles-preset="Eji9e8aNf"],[data-styles-preset="Sz9S4_GWH"],[data-styles-preset="fdldKf5t1"],[data-styles-preset="uwzn5fVVQ"],[data-styles-preset="AByCupjYN"],[data-styles-preset="CqiSJSFuN"]{--framer-text-transform:lowercase!important;text-transform:lowercase!important}
+</style>
+<script>
+(function(){
+  var B="https://cdn.jsdelivr.net/gh/binhamdanisa/mint-photos@b618cdc/fonts/";
+  var G="https://cdn.jsdelivr.net/fontsource/fonts/eb-garamond@latest/";
+  var faces=[
+    ["Syne",B+"sackers-gothic-light.woff","100 500","normal"],["Syne",B+"sackers-gothic-heavy.woff","600 900","normal"],
+    ["Syne Variable",B+"sackers-gothic-light.woff","100 500","normal"],["Syne Variable",B+"sackers-gothic-heavy.woff","600 900","normal"],
+    ["Libre Caslon Text",G+"latin-400-normal.woff2","100 450","normal"],["Libre Caslon Text",G+"latin-500-normal.woff2","451 550","normal"],
+    ["Libre Caslon Text",G+"latin-600-normal.woff2","551 900","normal"],["Libre Caslon Text",G+"latin-400-italic.woff2","100 900","italic"]
+  ];
+  try{ if(window.FontFace&&document.fonts){ faces.forEach(function(f){ var ff=new FontFace(f[0],"url("+f[1]+")",{weight:f[2],style:f[3],display:"swap"}); document.fonts.add(ff); ff.load().catch(function(){}); }); } }catch(e){}
+  function fix(root){
+    try{
+      var els=root.getElementsByTagName?root.getElementsByTagName("*"):[];
+      var list=[root];for(var i=0;i<els.length;i++)list.push(els[i]);
+      for(var j=0;j<list.length;j++){
+        var el=list[j]; if(el.nodeType!==1)continue; var cs=getComputedStyle(el);
+        if(cs.textTransform==="uppercase"&&/^\s*["']?Syne/.test(cs.fontFamily)){ el.style.setProperty("text-transform","lowercase","important"); }
+      }
+    }catch(e){}
+  }
+  var queue=[],timer=null;
+  function flush(){ timer=null; var q=queue; queue=[]; for(var i=0;i<q.length;i++){ if(q[i].isConnected)fix(q[i]); } }
+  function add(n){ if(n&&n.nodeType===1){ queue.push(n); if(!timer)timer=setTimeout(flush,120); } }
+  function start(){ add(document.body); try{ new MutationObserver(function(rs){ for(var i=0;i<rs.length;i++){ var a=rs[i].addedNodes; for(var k=0;k<a.length;k++)add(a[k]); if(rs[i].type==="characterData"&&rs[i].target.parentElement)add(rs[i].target.parentElement); } }).observe(document.body,{childList:true,subtree:true,characterData:true}); }catch(e){} }
+  if(document.body)start();else document.addEventListener("DOMContentLoaded",start);
+})();
+</script>
