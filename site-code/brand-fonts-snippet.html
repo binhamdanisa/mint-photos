@@ -1,54 +1,34 @@
 <style id="mint-brand-fonts">
-/* Mint brand type: Sackers Gothic (shown in place of Syne, always small caps) and EB Garamond (in place of Libre Caslon Text). */
-@font-face{font-family:"Syne";src:url("https://cdn.jsdelivr.net/gh/binhamdanisa/mint-photos@b618cdc/fonts/sackers-gothic-light.woff") format("woff");font-weight:100 500;font-style:normal;font-display:swap}
-@font-face{font-family:"Syne";src:url("https://cdn.jsdelivr.net/gh/binhamdanisa/mint-photos@b618cdc/fonts/sackers-gothic-heavy.woff") format("woff");font-weight:600 900;font-style:normal;font-display:swap}
-@font-face{font-family:"Syne Variable";src:url("https://cdn.jsdelivr.net/gh/binhamdanisa/mint-photos@b618cdc/fonts/sackers-gothic-light.woff") format("woff");font-weight:100 500;font-style:normal;font-display:swap}
-@font-face{font-family:"Syne Variable";src:url("https://cdn.jsdelivr.net/gh/binhamdanisa/mint-photos@b618cdc/fonts/sackers-gothic-heavy.woff") format("woff");font-weight:600 900;font-style:normal;font-display:swap}
-@font-face{font-family:"Libre Caslon Text";src:url("https://cdn.jsdelivr.net/fontsource/fonts/eb-garamond@latest/latin-400-normal.woff2") format("woff2");font-weight:100 450;font-style:normal;font-display:swap}
-@font-face{font-family:"Libre Caslon Text";src:url("https://cdn.jsdelivr.net/fontsource/fonts/eb-garamond@latest/latin-500-normal.woff2") format("woff2");font-weight:451 550;font-style:normal;font-display:swap}
-@font-face{font-family:"Libre Caslon Text";src:url("https://cdn.jsdelivr.net/fontsource/fonts/eb-garamond@latest/latin-600-normal.woff2") format("woff2");font-weight:551 900;font-style:normal;font-display:swap}
-@font-face{font-family:"Libre Caslon Text";src:url("https://cdn.jsdelivr.net/fontsource/fonts/eb-garamond@latest/latin-400-italic.woff2") format("woff2");font-weight:100 900;font-style:italic;font-display:swap}
-[style*="Syne"],[data-styles-preset="umXNQhy9r"],[data-styles-preset="PX7DEun1D"],[data-styles-preset="KpfcnG7CO"],[data-styles-preset="FxwKcXUM_"],[data-styles-preset="Eji9e8aNf"],[data-styles-preset="Sz9S4_GWH"],[data-styles-preset="fdldKf5t1"],[data-styles-preset="uwzn5fVVQ"],[data-styles-preset="AByCupjYN"],[data-styles-preset="CqiSJSFuN"]{--framer-text-transform:lowercase!important;text-transform:lowercase!important}
+/* Mint brand type. Sackers Gothic is the house face, always set in lowercase so it shows as small capitals;
+   EB Garamond is for reading text. Anything the site styles as Syne becomes Sackers Gothic, anything styled as
+   Libre Caslon Text becomes EB Garamond. */
+@font-face{font-family:"Mint Sackers";src:url("https://cdn.jsdelivr.net/gh/binhamdanisa/mint-photos@b618cdc/fonts/sackers-gothic-light.woff") format("woff");font-weight:100 500;font-style:normal;font-display:swap}
+@font-face{font-family:"Mint Sackers";src:url("https://cdn.jsdelivr.net/gh/binhamdanisa/mint-photos@b618cdc/fonts/sackers-gothic-heavy.woff") format("woff");font-weight:600 900;font-style:normal;font-display:swap}
+@font-face{font-family:"Mint Garamond";src:url("https://cdn.jsdelivr.net/fontsource/fonts/eb-garamond@latest/latin-400-normal.woff2") format("woff2");font-weight:100 450;font-style:normal;font-display:swap}
+@font-face{font-family:"Mint Garamond";src:url("https://cdn.jsdelivr.net/fontsource/fonts/eb-garamond@latest/latin-500-normal.woff2") format("woff2");font-weight:451 550;font-style:normal;font-display:swap}
+@font-face{font-family:"Mint Garamond";src:url("https://cdn.jsdelivr.net/fontsource/fonts/eb-garamond@latest/latin-600-normal.woff2") format("woff2");font-weight:551 900;font-style:normal;font-display:swap}
+@font-face{font-family:"Mint Garamond";src:url("https://cdn.jsdelivr.net/fontsource/fonts/eb-garamond@latest/latin-400-italic.woff2") format("woff2");font-weight:100 900;font-style:italic;font-display:swap}
+[style*="Syne"],[data-styles-preset="umXNQhy9r"],[data-styles-preset="PX7DEun1D"],[data-styles-preset="KpfcnG7CO"],[data-styles-preset="FxwKcXUM_"],[data-styles-preset="Eji9e8aNf"],[data-styles-preset="Sz9S4_GWH"],[data-styles-preset="fdldKf5t1"],[data-styles-preset="uwzn5fVVQ"],[data-styles-preset="AByCupjYN"],[data-styles-preset="CqiSJSFuN"],.mint-sackers{--framer-font-family:"Mint Sackers","Helvetica Neue",Arial,sans-serif!important;font-family:"Mint Sackers","Helvetica Neue",Arial,sans-serif!important;--framer-text-transform:lowercase!important;text-transform:lowercase!important}
+[style*="Libre Caslon"],[data-styles-preset="B1F07c_oZ"],[data-styles-preset="n9jrpPEGX"],[data-styles-preset="aPqv2C1EJ"],[data-styles-preset="nZIMpa9h8"],[data-styles-preset="xYEC_wF3E"],[data-styles-preset="V5FpUwTis"]{--framer-font-family:"Mint Garamond",Georgia,serif!important;font-family:"Mint Garamond",Georgia,serif!important}
 </style>
 <script>
 (function(){
-  var B="https://cdn.jsdelivr.net/gh/binhamdanisa/mint-photos@b618cdc/fonts/";
-  var G="https://cdn.jsdelivr.net/fontsource/fonts/eb-garamond@latest/";
-  var faces=[
-    ["Syne",B+"sackers-gothic-light.woff","100 500","normal"],["Syne",B+"sackers-gothic-heavy.woff","600 900","normal"],
-    ["Syne Variable",B+"sackers-gothic-light.woff","100 500","normal"],["Syne Variable",B+"sackers-gothic-heavy.woff","600 900","normal"],
-    ["Libre Caslon Text",G+"latin-400-normal.woff2","100 450","normal"],["Libre Caslon Text",G+"latin-500-normal.woff2","451 550","normal"],
-    ["Libre Caslon Text",G+"latin-600-normal.woff2","551 900","normal"],["Libre Caslon Text",G+"latin-400-italic.woff2","100 900","italic"]
-  ];
-  // Framer also registers its own Syne and Libre Caslon faces from script after the page loads; those would win, so
-  // ours are kept as the only faces under these names.
-  var mine=[], NAMES=/^["']?(Syne|Syne Variable|Libre Caslon Text)["']?$/;
-  function claim(){
-    try{
-      if(!window.FontFace||!document.fonts)return;
-      if(!mine.length){ faces.forEach(function(f){ var ff=new FontFace(f[0],"url("+f[1]+")",{weight:f[2],style:f[3],display:"swap"}); mine.push(ff); ff.load().catch(function(){}); }); }
-      var drop=[]; document.fonts.forEach(function(f){ if(NAMES.test(f.family)&&mine.indexOf(f)<0)drop.push(f); });
-      drop.forEach(function(f){ try{document.fonts.delete(f);}catch(e){} });
-      mine.forEach(function(f){ if(!document.fonts.has(f))document.fonts.add(f); });
-    }catch(e){}
-  }
-  claim();
-  try{ document.fonts.addEventListener("loadingdone",claim); }catch(e){}
-  window.addEventListener("load",claim);
-  var n=0, iv=setInterval(function(){ claim(); if(++n>20)clearInterval(iv); },500);
+  // Backstop for text styled from a stylesheet rather than inline: the same swap, applied once to each new element.
+  var SANS='"Mint Sackers","Helvetica Neue",Arial,sans-serif', SERIF='"Mint Garamond",Georgia,serif';
   function fix(root){
     try{
       var els=root.getElementsByTagName?root.getElementsByTagName("*"):[];
       var list=[root];for(var i=0;i<els.length;i++)list.push(els[i]);
       for(var j=0;j<list.length;j++){
-        var el=list[j]; if(el.nodeType!==1)continue; var cs=getComputedStyle(el);
-        if(cs.textTransform==="uppercase"&&/^\s*["']?Syne/.test(cs.fontFamily)){ el.style.setProperty("text-transform","lowercase","important"); }
+        var el=list[j]; if(el.nodeType!==1)continue; var ff=getComputedStyle(el).fontFamily||"";
+        if(/^\s*["']?Syne/.test(ff)){ el.style.setProperty("font-family",SANS,"important"); el.style.setProperty("text-transform","lowercase","important"); }
+        else if(/^\s*["']?Libre Caslon/.test(ff)){ el.style.setProperty("font-family",SERIF,"important"); }
       }
     }catch(e){}
   }
   var queue=[],timer=null;
-  function flush(){ timer=null; claim(); var q=queue; queue=[]; for(var i=0;i<q.length;i++){ if(q[i].isConnected)fix(q[i]); } }
-  function add(n){ if(n&&n.nodeType===1){ queue.push(n); if(!timer)timer=setTimeout(flush,120); } }
+  function flush(){ timer=null; var q=queue; queue=[]; for(var i=0;i<q.length;i++){ if(q[i].isConnected)fix(q[i]); } }
+  function add(n){ if(n&&n.nodeType===1){ queue.push(n); if(!timer)timer=setTimeout(flush,60); } }
   function start(){ add(document.body); try{ new MutationObserver(function(rs){ for(var i=0;i<rs.length;i++){ var a=rs[i].addedNodes; for(var k=0;k<a.length;k++)add(a[k]); if(rs[i].type==="characterData"&&rs[i].target.parentElement)add(rs[i].target.parentElement); } }).observe(document.body,{childList:true,subtree:true,characterData:true}); }catch(e){} }
   if(document.body)start();else document.addEventListener("DOMContentLoaded",start);
 })();
