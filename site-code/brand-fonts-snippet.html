@@ -20,7 +20,22 @@
     ["Libre Caslon Text",G+"latin-400-normal.woff2","100 450","normal"],["Libre Caslon Text",G+"latin-500-normal.woff2","451 550","normal"],
     ["Libre Caslon Text",G+"latin-600-normal.woff2","551 900","normal"],["Libre Caslon Text",G+"latin-400-italic.woff2","100 900","italic"]
   ];
-  try{ if(window.FontFace&&document.fonts){ faces.forEach(function(f){ var ff=new FontFace(f[0],"url("+f[1]+")",{weight:f[2],style:f[3],display:"swap"}); document.fonts.add(ff); ff.load().catch(function(){}); }); } }catch(e){}
+  // Framer also registers its own Syne and Libre Caslon faces from script after the page loads; those would win, so
+  // ours are kept as the only faces under these names.
+  var mine=[], NAMES=/^["']?(Syne|Syne Variable|Libre Caslon Text)["']?$/;
+  function claim(){
+    try{
+      if(!window.FontFace||!document.fonts)return;
+      if(!mine.length){ faces.forEach(function(f){ var ff=new FontFace(f[0],"url("+f[1]+")",{weight:f[2],style:f[3],display:"swap"}); mine.push(ff); ff.load().catch(function(){}); }); }
+      var drop=[]; document.fonts.forEach(function(f){ if(NAMES.test(f.family)&&mine.indexOf(f)<0)drop.push(f); });
+      drop.forEach(function(f){ try{document.fonts.delete(f);}catch(e){} });
+      mine.forEach(function(f){ if(!document.fonts.has(f))document.fonts.add(f); });
+    }catch(e){}
+  }
+  claim();
+  try{ document.fonts.addEventListener("loadingdone",claim); }catch(e){}
+  window.addEventListener("load",claim);
+  var n=0, iv=setInterval(function(){ claim(); if(++n>20)clearInterval(iv); },500);
   function fix(root){
     try{
       var els=root.getElementsByTagName?root.getElementsByTagName("*"):[];
@@ -32,7 +47,7 @@
     }catch(e){}
   }
   var queue=[],timer=null;
-  function flush(){ timer=null; var q=queue; queue=[]; for(var i=0;i<q.length;i++){ if(q[i].isConnected)fix(q[i]); } }
+  function flush(){ timer=null; claim(); var q=queue; queue=[]; for(var i=0;i<q.length;i++){ if(q[i].isConnected)fix(q[i]); } }
   function add(n){ if(n&&n.nodeType===1){ queue.push(n); if(!timer)timer=setTimeout(flush,120); } }
   function start(){ add(document.body); try{ new MutationObserver(function(rs){ for(var i=0;i<rs.length;i++){ var a=rs[i].addedNodes; for(var k=0;k<a.length;k++)add(a[k]); if(rs[i].type==="characterData"&&rs[i].target.parentElement)add(rs[i].target.parentElement); } }).observe(document.body,{childList:true,subtree:true,characterData:true}); }catch(e){} }
   if(document.body)start();else document.addEventListener("DOMContentLoaded",start);
