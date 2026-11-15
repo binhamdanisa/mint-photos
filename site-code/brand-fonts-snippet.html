@@ -1,32 +1,45 @@
 <style id="mint-brand-fonts">
 /* Mint brand type. Sackers Gothic is the main face: every title, heading, label, button, name and price, always
-   set in lowercase so it shows as small capitals. EB Garamond is only for paragraphs of reading text. Anything the site styles as Syne becomes Sackers Gothic, anything styled as
+   set in lowercase so it shows as small capitals. EB Garamond is only for paragraphs of reading text.
+   The vertical metrics are evened out (ascent 90%, descent 30%) so small capitals sit centered in pills and buttons. Anything the site styles as Syne becomes Sackers Gothic, anything styled as
    Libre Caslon Text becomes EB Garamond. */
-@font-face{font-family:"Mint Sackers";src:url("https://cdn.jsdelivr.net/gh/binhamdanisa/mint-photos@b618cdc/fonts/sackers-gothic-light.woff") format("woff");font-weight:100 500;font-style:normal;font-display:swap}
-@font-face{font-family:"Mint Sackers";src:url("https://cdn.jsdelivr.net/gh/binhamdanisa/mint-photos@b618cdc/fonts/sackers-gothic-heavy.woff") format("woff");font-weight:600 900;font-style:normal;font-display:swap}
+@font-face{font-family:"Mint Sackers";src:url("https://cdn.jsdelivr.net/gh/binhamdanisa/mint-photos@cdc4b40/fonts/sackers-sc-light.woff") format("woff");font-weight:100 500;font-style:normal;font-display:swap;ascent-override:90%;descent-override:30%;line-gap-override:0%}
+@font-face{font-family:"Mint Sackers";src:url("https://cdn.jsdelivr.net/gh/binhamdanisa/mint-photos@cdc4b40/fonts/sackers-sc-heavy.woff") format("woff");font-weight:600 900;font-style:normal;font-display:swap;ascent-override:90%;descent-override:30%;line-gap-override:0%}
 @font-face{font-family:"Mint Garamond";src:url("https://cdn.jsdelivr.net/fontsource/fonts/eb-garamond@latest/latin-400-normal.woff2") format("woff2");font-weight:100 450;font-style:normal;font-display:swap}
 @font-face{font-family:"Mint Garamond";src:url("https://cdn.jsdelivr.net/fontsource/fonts/eb-garamond@latest/latin-500-normal.woff2") format("woff2");font-weight:451 550;font-style:normal;font-display:swap}
 @font-face{font-family:"Mint Garamond";src:url("https://cdn.jsdelivr.net/fontsource/fonts/eb-garamond@latest/latin-600-normal.woff2") format("woff2");font-weight:551 900;font-style:normal;font-display:swap}
 @font-face{font-family:"Mint Garamond";src:url("https://cdn.jsdelivr.net/fontsource/fonts/eb-garamond@latest/latin-400-italic.woff2") format("woff2");font-weight:100 900;font-style:italic;font-display:swap}
-[style*="Syne"],[data-styles-preset="umXNQhy9r"],[data-styles-preset="PX7DEun1D"],[data-styles-preset="KpfcnG7CO"],[data-styles-preset="FxwKcXUM_"],[data-styles-preset="Eji9e8aNf"],[data-styles-preset="Sz9S4_GWH"],[data-styles-preset="fdldKf5t1"],[data-styles-preset="uwzn5fVVQ"],[data-styles-preset="AByCupjYN"],[data-styles-preset="CqiSJSFuN"],[data-styles-preset="B1F07c_oZ"],[data-styles-preset="n9jrpPEGX"],h1[style*="Libre Caslon"],h2[style*="Libre Caslon"],h3[style*="Libre Caslon"],h4[style*="Libre Caslon"],h1 [style*="Libre Caslon"],h2 [style*="Libre Caslon"],h3 [style*="Libre Caslon"],h4 [style*="Libre Caslon"],.mint-sackers{--framer-font-family:"Mint Sackers","Helvetica Neue",Arial,sans-serif!important;font-family:"Mint Sackers","Helvetica Neue",Arial,sans-serif!important;--framer-text-transform:lowercase!important;text-transform:lowercase!important}
-[style*="Libre Caslon"],[data-styles-preset="aPqv2C1EJ"],[data-styles-preset="nZIMpa9h8"],[data-styles-preset="xYEC_wF3E"],[data-styles-preset="V5FpUwTis"]{--framer-font-family:"Mint Garamond",Georgia,serif!important;font-family:"Mint Garamond",Georgia,serif!important}
+[style*="Syne"],[data-styles-preset="umXNQhy9r"],[data-styles-preset="PX7DEun1D"],[data-styles-preset="KpfcnG7CO"],[data-styles-preset="FxwKcXUM_"],[data-styles-preset="Eji9e8aNf"],[data-styles-preset="Sz9S4_GWH"],[data-styles-preset="fdldKf5t1"],[data-styles-preset="uwzn5fVVQ"],[data-styles-preset="AByCupjYN"],[data-styles-preset="CqiSJSFuN"],.mint-sackers,[data-mint-type="sans"]{--framer-font-family:"Mint Sackers","Helvetica Neue",Arial,sans-serif!important;font-family:"Mint Sackers","Helvetica Neue",Arial,sans-serif!important;--framer-text-transform:lowercase!important;text-transform:lowercase!important}
+[style*="Libre Caslon"]:not([data-mint-type="sans"]),[data-styles-preset="B1F07c_oZ"]:not([data-mint-type="sans"]),[data-styles-preset="n9jrpPEGX"]:not([data-mint-type="sans"]),[data-styles-preset="aPqv2C1EJ"],[data-styles-preset="nZIMpa9h8"],[data-styles-preset="xYEC_wF3E"],[data-styles-preset="V5FpUwTis"]{--framer-font-family:"Mint Garamond",Georgia,serif!important;font-family:"Mint Garamond",Georgia,serif!important}
 </style>
 <script>
 (function(){
   // Backstop for text styled from a stylesheet rather than inline: the same swap, applied once to each new element.
   var SANS='"Mint Sackers","Helvetica Neue",Arial,sans-serif', SERIF='"Mint Garamond",Georgia,serif';
-  function sans(el){ el.style.setProperty("font-family",SANS,"important"); el.style.setProperty("text-transform","lowercase","important"); el.style.setProperty("font-style","normal","important"); }
+  // Sackers is the main face: bold or large serif text (piece names, prices, card titles) becomes Sackers small capitals.
+  // Sackers is wider than the serif, so converted text is set at 82% of its serif size, the same ratio everywhere,
+  // which keeps every section in the same proportion. Running text (regular weight, under 20px) stays in EB Garamond.
+  var RATIO=0.82;
+  function sans(el){ el.setAttribute("data-mint-type","sans"); el.style.setProperty("font-family",SANS,"important"); el.style.setProperty("text-transform","lowercase","important"); el.style.setProperty("font-style","normal","important"); }
   function fix(root){
     try{
       var els=root.getElementsByTagName?root.getElementsByTagName("*"):[];
       var list=[root];for(var i=0;i<els.length;i++)list.push(els[i]);
       for(var j=0;j<list.length;j++){
-        var el=list[j]; if(el.nodeType!==1||!el.firstChild)continue; var cs=getComputedStyle(el), ff=cs.fontFamily||"";
+        var el=list[j]; if(el.nodeType!==1||!el.firstChild||el.hasAttribute("data-mint-type"))continue;
+        var cs=getComputedStyle(el), ff=cs.fontFamily||"";
         if(/^\s*["']?Syne/.test(ff)){ sans(el); continue; }
-        if(!/^\s*["']?(Libre Caslon|Mint Garamond)/.test(ff))continue;
-        // Titles, names and prices take Sackers; only running text stays in Garamond.
-        var w=parseInt(cs.fontWeight,10)||400, px=parseFloat(cs.fontSize)||16, head=/^H[1-6]$/.test(el.tagName)||!!el.closest("h1,h2,h3,h4,h5,h6");
-        if(head||w>=600||px>=20) sans(el); else if(/Libre Caslon/.test(ff)) el.style.setProperty("font-family",SERIF,"important");
+        if(!/^\s*["']?(Libre Caslon|Mint Garamond)/.test(ff)){
+          if(/^\s*["']?Mint Sackers/.test(ff)) el.setAttribute("data-mint-type","sans");
+          continue;
+        }
+        var w=parseInt(cs.fontWeight,10)||400, px=parseFloat(cs.fontSize)||16;
+        var heading=/^H[1-6]$/.test(el.tagName);
+        if(w>=600||px>=20||heading){
+          var par=el.parentElement, inherited=par&&par.getAttribute("data-mint-type")==="sans"&&parseFloat(getComputedStyle(par).fontSize)===px;
+          sans(el);
+          if(!inherited) el.style.setProperty("font-size",(Math.round(px*RATIO*10)/10)+"px","important");
+        } else { el.setAttribute("data-mint-type","serif"); el.style.setProperty("font-family",SERIF,"important"); }
       }
     }catch(e){}
   }
