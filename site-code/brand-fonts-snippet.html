@@ -20,7 +20,8 @@
   // Sackers is wider than the serif, so converted text is set at 82% of its serif size, the same ratio everywhere,
   // which keeps every section in the same proportion. Running text (regular weight, under 20px) stays in EB Garamond.
   var RATIO=0.82;
-  function sans(el){ el.setAttribute("data-mint-type","sans"); el.style.setProperty("font-family",SANS,"important"); el.style.setProperty("text-transform","lowercase","important"); el.style.setProperty("font-style","normal","important"); }
+  // Small capitals below 11px read as specks on a phone, so 11px is the floor for every Sackers label.
+  function sans(el){ el.setAttribute("data-mint-type","sans"); el.style.setProperty("font-family",SANS,"important"); el.style.setProperty("text-transform","lowercase","important"); el.style.setProperty("font-style","normal","important"); if((parseFloat(getComputedStyle(el).fontSize)||16)<11) el.style.setProperty("font-size","11px","important"); }
   function fix(root){
     try{
       var els=root.getElementsByTagName?root.getElementsByTagName("*"):[];
@@ -30,7 +31,7 @@
         var cs=getComputedStyle(el), ff=cs.fontFamily||"";
         if(/^\s*["']?Syne/.test(ff)){ sans(el); continue; }
         if(!/^\s*["']?(Libre Caslon|Mint Garamond)/.test(ff)){
-          if(/^\s*["']?Mint Sackers/.test(ff)) el.setAttribute("data-mint-type","sans");
+          if(/^\s*["']?Mint Sackers/.test(ff)) sans(el);
           continue;
         }
         var w=parseInt(cs.fontWeight,10)||400, px=parseFloat(cs.fontSize)||16;
