@@ -3,8 +3,8 @@
    set in lowercase so it shows as small capitals. EB Garamond is only for paragraphs of reading text.
    The vertical metrics are evened out (ascent 90%, descent 30%) so small capitals sit centered in pills and buttons. Anything the site styles as Syne becomes Sackers Gothic, anything styled as
    Libre Caslon Text, Inter, Geist or Bricolage Grotesque becomes EB Garamond (or Sackers when bold or large). */
-@font-face{font-family:"Mint Sackers";src:url("https://cdn.jsdelivr.net/gh/binhamdanisa/mint-photos@840d611/fonts/sackers-tt-light.woff") format("woff"),url("https://cdn.jsdelivr.net/gh/binhamdanisa/mint-photos@840d611/fonts/sackers-tt-light.ttf") format("truetype");font-weight:100 500;font-style:normal;font-display:swap;ascent-override:90%;descent-override:30%;line-gap-override:0%}
-@font-face{font-family:"Mint Sackers";src:url("https://cdn.jsdelivr.net/gh/binhamdanisa/mint-photos@840d611/fonts/sackers-tt-heavy.woff") format("woff"),url("https://cdn.jsdelivr.net/gh/binhamdanisa/mint-photos@840d611/fonts/sackers-tt-heavy.ttf") format("truetype");font-weight:600 900;font-style:normal;font-display:swap;ascent-override:90%;descent-override:30%;line-gap-override:0%}
+@font-face{font-family:"Mint Sackers";src:url("https://cdn.jsdelivr.net/gh/binhamdanisa/mint-photos@880a031/fonts/sackers-v3-light.woff") format("woff"),url("https://cdn.jsdelivr.net/gh/binhamdanisa/mint-photos@880a031/fonts/sackers-v3-light.ttf") format("truetype");font-weight:100 500;font-style:normal;font-display:swap}
+@font-face{font-family:"Mint Sackers";src:url("https://cdn.jsdelivr.net/gh/binhamdanisa/mint-photos@880a031/fonts/sackers-v3-heavy.woff") format("woff"),url("https://cdn.jsdelivr.net/gh/binhamdanisa/mint-photos@880a031/fonts/sackers-v3-heavy.ttf") format("truetype");font-weight:600 900;font-style:normal;font-display:swap}
 @font-face{font-family:"Mint Garamond";src:url("https://cdn.jsdelivr.net/fontsource/fonts/eb-garamond@latest/latin-400-normal.woff2") format("woff2");font-weight:100 450;font-style:normal;font-display:swap}
 @font-face{font-family:"Mint Garamond";src:url("https://cdn.jsdelivr.net/fontsource/fonts/eb-garamond@latest/latin-500-normal.woff2") format("woff2");font-weight:451 550;font-style:normal;font-display:swap}
 @font-face{font-family:"Mint Garamond";src:url("https://cdn.jsdelivr.net/fontsource/fonts/eb-garamond@latest/latin-600-normal.woff2") format("woff2");font-weight:551 900;font-style:normal;font-display:swap}
@@ -20,8 +20,9 @@
   // Sackers is wider than the serif, so converted text is set at 82% of its serif size, the same ratio everywhere,
   // which keeps every section in the same proportion. Running text (regular weight, under 20px) stays in EB Garamond.
   var RATIO=0.82;
+  // Sackers is far wider than Syne, so the tracking set for Syne is halved.
   // Small capitals below 11px read as specks on a phone, so 11px is the floor for every Sackers label.
-  function sans(el){ el.setAttribute("data-mint-type","sans"); el.style.setProperty("font-family",SANS,"important"); el.style.setProperty("text-transform","lowercase","important"); el.style.setProperty("font-style","normal","important"); if((parseFloat(getComputedStyle(el).fontSize)||16)<11) el.style.setProperty("font-size","11px","important"); }
+  function sans(el){ var cs0=getComputedStyle(el), ls=parseFloat(cs0.letterSpacing)||0, par0=el.parentElement, inh=par0&&par0.getAttribute("data-mint-type")==="sans"&&parseFloat(getComputedStyle(par0).letterSpacing)===ls; el.setAttribute("data-mint-type","sans"); if(ls>0&&!inh) el.style.setProperty("letter-spacing",(Math.round(ls*0.5*100)/100)+"px","important"); el.style.setProperty("font-family",SANS,"important"); el.style.setProperty("text-transform","lowercase","important"); el.style.setProperty("font-style","normal","important"); if((parseFloat(getComputedStyle(el).fontSize)||16)<11) el.style.setProperty("font-size","11px","important"); }
   function fix(root){
     try{
       var els=root.getElementsByTagName?root.getElementsByTagName("*"):[];
