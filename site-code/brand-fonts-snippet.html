@@ -42,7 +42,8 @@
         var heading=/^H[1-6]$/.test(el.tagName);
         // A value under a label (spec tiles: Case size / 44mm) is a detail: EB Garamond at a reading size.
         var box=(el.closest&&el.closest('[data-framer-component-type="RichTextContainer"]'))||el, prev=box.previousElementSibling;
-        if(w>=600&&px<=16&&!heading&&prev&&(prev.getAttribute("data-mint-type")==="sans"||prev.querySelector('[data-mint-type="sans"]'))){
+        var tile=box.parentElement;
+        if(w>=600&&px<=16&&!heading&&prev&&tile&&tile.children.length===2&&!(el.closest&&el.closest('a,button,[role="button"]'))&&prev.getAttribute("data-framer-component-type")==="RichTextContainer"&&(prev.getAttribute("data-mint-type")==="sans"||prev.querySelector('[data-mint-type="sans"]'))){
           el.setAttribute("data-mint-type","serif"); el.style.setProperty("font-family",SERIF,"important"); el.style.setProperty("font-size","18px","important"); el.style.setProperty("font-weight","500","important"); el.style.setProperty("letter-spacing","0","important"); continue;
         }
         if(w>=600||px>=20||heading){
