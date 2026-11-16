@@ -11,7 +11,8 @@
 @font-face{font-family:"Mint Garamond";src:url("https://cdn.jsdelivr.net/fontsource/fonts/eb-garamond@latest/latin-400-italic.woff2") format("woff2");font-weight:100 900;font-style:italic;font-display:swap}
 [style*="Syne"],[data-styles-preset="umXNQhy9r"],[data-styles-preset="PX7DEun1D"],[data-styles-preset="KpfcnG7CO"],[data-styles-preset="FxwKcXUM_"],[data-styles-preset="Eji9e8aNf"],[data-styles-preset="Sz9S4_GWH"],[data-styles-preset="fdldKf5t1"],[data-styles-preset="uwzn5fVVQ"],[data-styles-preset="AByCupjYN"],[data-styles-preset="CqiSJSFuN"],.mint-sackers,[data-mint-type="sans"]{--framer-font-family:"Mint Sackers","Helvetica Neue",Arial,sans-serif!important;font-family:"Mint Sackers","Helvetica Neue",Arial,sans-serif!important;--framer-text-transform:lowercase!important;text-transform:lowercase!important}
 [style*="Libre Caslon"]:not([data-mint-type="sans"]),[data-styles-preset="B1F07c_oZ"]:not([data-mint-type="sans"]),[data-styles-preset="n9jrpPEGX"]:not([data-mint-type="sans"]),[data-styles-preset="aPqv2C1EJ"],[data-styles-preset="nZIMpa9h8"],[data-styles-preset="xYEC_wF3E"],[data-styles-preset="V5FpUwTis"]{--framer-font-family:"Mint Garamond",Georgia,serif!important;font-family:"Mint Garamond",Georgia,serif!important}
-[data-framer-name="Condition · Year"],[data-framer-name="Condition · Year"] *{--framer-font-family:"Mint Sackers","Helvetica Neue",Arial,sans-serif!important;font-family:"Mint Sackers","Helvetica Neue",Arial,sans-serif!important;font-size:13px!important;font-weight:600!important;letter-spacing:.06em!important;text-transform:lowercase!important}
+[data-framer-name="Condition · Year"],[data-framer-name="Condition · Year"] *{--framer-font-family:"Mint Garamond",Georgia,serif!important;font-family:"Mint Garamond",Georgia,serif!important;font-size:15px!important;font-weight:400!important;letter-spacing:0!important;text-transform:none!important}
+[data-framer-name="Condition · Year"] [data-mint-grade]{font-weight:600!important}
 </style>
 <script>
 (function(){
@@ -23,13 +24,14 @@
   var RATIO=0.82;
   // Sackers is far wider than Syne, so the tracking set for Syne is halved.
   // Small capitals below 12px read as specks on a phone, so 12px is the floor for every Sackers label.
-  function sans(el){ if(el.closest&&el.closest('[data-framer-name="Condition · Year"]')){el.setAttribute("data-mint-type","sans");return;} var cs0=getComputedStyle(el), ls=parseFloat(cs0.letterSpacing)||0, par0=el.parentElement, inh=par0&&par0.getAttribute("data-mint-type")==="sans"&&parseFloat(getComputedStyle(par0).letterSpacing)===ls; el.setAttribute("data-mint-type","sans"); if(ls>0&&!inh) el.style.setProperty("letter-spacing",(Math.round(ls*0.5*100)/100)+"px","important"); el.style.setProperty("font-family",SANS,"important"); el.style.setProperty("text-transform","lowercase","important"); el.style.setProperty("font-style","normal","important"); if((parseFloat(getComputedStyle(el).fontSize)||16)<12) el.style.setProperty("font-size","12px","important"); }
+  function sans(el){  var cs0=getComputedStyle(el), ls=parseFloat(cs0.letterSpacing)||0, par0=el.parentElement, inh=par0&&par0.getAttribute("data-mint-type")==="sans"&&parseFloat(getComputedStyle(par0).letterSpacing)===ls; el.setAttribute("data-mint-type","sans"); if(ls>0&&!inh) el.style.setProperty("letter-spacing",(Math.round(ls*0.5*100)/100)+"px","important"); el.style.setProperty("font-family",SANS,"important"); el.style.setProperty("text-transform","lowercase","important"); el.style.setProperty("font-style","normal","important"); if((parseFloat(getComputedStyle(el).fontSize)||16)<12) el.style.setProperty("font-size","12px","important"); }
   function fix(root){
     try{
       var els=root.getElementsByTagName?root.getElementsByTagName("*"):[];
       var list=[root];for(var i=0;i<els.length;i++)list.push(els[i]);
       for(var j=0;j<list.length;j++){
         var el=list[j]; if(el.nodeType!==1||!el.firstChild||el.hasAttribute("data-mint-type"))continue;
+        if(el.closest&&el.closest('[data-framer-name="Condition · Year"]')){el.setAttribute("data-mint-type","serif");continue;}
         var cs=getComputedStyle(el), ff=cs.fontFamily||"";
         if(/^\s*["']?Syne/.test(ff)){ sans(el); continue; }
         if(!/^\s*["']?(Libre Caslon|Mint Garamond|Inter|Geist|Bricolage)/.test(ff)){
@@ -38,6 +40,11 @@
         }
         var w=parseInt(cs.fontWeight,10)||400, px=parseFloat(cs.fontSize)||16;
         var heading=/^H[1-6]$/.test(el.tagName);
+        // A value under a label (spec tiles: Case size / 44mm) is a detail: EB Garamond at a reading size.
+        var box=(el.closest&&el.closest('[data-framer-component-type="RichTextContainer"]'))||el, prev=box.previousElementSibling;
+        if(w>=600&&px<=16&&!heading&&prev&&(prev.getAttribute("data-mint-type")==="sans"||prev.querySelector('[data-mint-type="sans"]'))){
+          el.setAttribute("data-mint-type","serif"); el.style.setProperty("font-family",SERIF,"important"); el.style.setProperty("font-size","18px","important"); el.style.setProperty("font-weight","500","important"); el.style.setProperty("letter-spacing","0","important"); continue;
+        }
         if(w>=600||px>=20||heading){
           var par=el.parentElement, inherited=par&&par.getAttribute("data-mint-type")==="sans"&&parseFloat(getComputedStyle(par).fontSize)===px;
           sans(el);
